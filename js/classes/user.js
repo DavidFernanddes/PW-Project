@@ -1,5 +1,5 @@
-class User {
-    static currentId = 1;
+export default class User {
+    static currentId = 0;
     #id
     #name
     #username
@@ -7,7 +7,7 @@ class User {
     #active
     #role
 
-    constructor(id, name, username, password, active, role) {
+    constructor(name, username, password, active, role) {
         this.#id = User.currentId++;
         this.#name = name;
         this.#username = username;
