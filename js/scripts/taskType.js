@@ -1,19 +1,38 @@
 import Type from '../classes/type.js';
 
 const taskTypes = [];
+const modalElement = document.getElementById('modalCriarTipo');
+const modalInstance = new bootstrap.Modal(modalElement);
 
 function handleCreateType() {
-    const typeName = prompt('Digite o nome do novo tipo de tarefa:');
-    if (typeName) {
+    modalInstance.show();
+
+    const saveButton = modalElement.querySelector('.btn-success');
+    const inputField = document.getElementById('nomeTipo');
+
+    const saveHandler = () => {
+        const typeName = inputField.value.trim();
+        if (!typeName) {
+            alert('Por favor, insira um nome válido.');
+            return;
+        }
+
         try {
             const newType = new Type().Criar(typeName);
             taskTypes.push(newType);
             addTypeToTable(newType);
+            modalInstance.hide();
+            inputField.value = '';
         } catch (error) {
             alert(error.message);
+        } finally {
+            saveButton.removeEventListener('click', saveHandler);
         }
-    }
+    };
+
+    saveButton.addEventListener('click', saveHandler);
 }
+
 
 function addTypeToTable(type) {
     const tableBody = document.querySelector('tbody');
@@ -28,17 +47,22 @@ function addTypeToTable(type) {
     row.appendChild(nameCell);
 
     const actionsCell = document.createElement('td');
+    actionsCell.className = 'text-center';
 
     const editButton = document.createElement('button');
-    editButton.id = 'edit-type-button';
-    editButton.textContent = 'Editar';
-    editButton.addEventListener('click', () => handleEditType(type.getTypeId()));
+    editButton.className = 'btn btn-sm btn-warning me-1';
+    const editIcon = document.createElement('i');
+    editIcon.className = 'bi bi-pencil-fill';
+    editButton.appendChild(editIcon);
+    editButton.appendChild(document.createTextNode(' Editar'));
     actionsCell.appendChild(editButton);
 
     const deleteButton = document.createElement('button');
-    deleteButton.id = 'delete-type-button';
-    deleteButton.textContent = 'Apagar';
-    deleteButton.addEventListener('click', () => handleDeleteType(type.getTypeId()));
+    deleteButton.className = 'btn btn-sm btn-danger';
+    const deleteIcon = document.createElement('i');
+    deleteIcon.className = 'bi bi-trash-fill';
+    deleteButton.appendChild(deleteIcon);
+    deleteButton.appendChild(document.createTextNode(' Apagar'));
     actionsCell.appendChild(deleteButton);
 
     row.appendChild(actionsCell);
