@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestão de Tarefas</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Gestão de Tarefas</h1>
+    </header>
+
+    <main>
+      <section>
+        <button onclick="alert('Criar Tarefa')">Criar Tarefa</button>
+        <label for="filter">Filtrar:</label>
+        <select id="filter" onchange="alert('Filtrar Tarefas')">
+          <option value="all">Todas</option>
+          <option value="in-progress">Em curso</option>
+          <option value="completed">Concluídas</option>
+        </select>
+      </section>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Data Fim</th>
+            <th>Concluída</th>
+            <th>Utilizador</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Sem exemplos -->
+        </tbody>
+      </table>
+      <p class="error" id="error-message"></p>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Sistema de Gestão</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestão de Tipos de Tarefas</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Gestão de Tipos de Tarefas</h1>
+    </header>
+
+    <main>
+      <button onclick="alert('Criar Tipo de Tarefa')">
+        Criar Tipo de Tarefa
+      </button>
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nome</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Planejamento</td>
+            <td>
+              <button onclick="alert('Editar Tipo de Tarefa')">Editar</button>
+              <button onclick="alert('Apagar Tipo de Tarefa')">Apagar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="error" id="error-message"></p>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Sistema de Gestão</p>
+    </footer>
+  </body>
+</html>
