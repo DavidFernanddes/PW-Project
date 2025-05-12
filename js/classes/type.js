@@ -1,5 +1,5 @@
-class Type {
-    static typeId = 1;
+export default class Type {
+    static typeId = 0;
     static types = [];
     #id;
     #name;
@@ -47,8 +47,8 @@ class Type {
         return typeToEdit;
     }
 
-    Apagar(name, tasks) {
-        const index = Type.types.findIndex(type => type.getName().toLowerCase() === name.toLowerCase());
+    Apagar(id, tasks) {
+        const index = Type.types.findIndex(type => type.getTypeId() === id);
         if (index === -1) {
             throw new Error('Tipo não encontrado');
         }

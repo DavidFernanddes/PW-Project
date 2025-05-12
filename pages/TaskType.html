@@ -7,14 +7,13 @@
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
   <body>
+    <script type="module" src="../js/scripts/taskType.js"></script>
     <header>
       <h1>Gestão de Tipos de Tarefas</h1>
     </header>
 
     <main>
-      <button onclick="alert('Criar Tipo de Tarefa')">
-        Criar Tipo de Tarefa
-      </button>
+      <button id="create-type-button">Criar Tipo de Tarefa</button>
       <table>
         <thead>
           <tr>
@@ -24,14 +23,6 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Planejamento</td>
-            <td>
-              <button onclick="alert('Editar Tipo de Tarefa')">Editar</button>
-              <button onclick="alert('Apagar Tipo de Tarefa')">Apagar</button>
-            </td>
-          </tr>
         </tbody>
       </table>
       <p class="error" id="error-message"></p>
