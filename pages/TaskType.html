@@ -20,7 +20,8 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
     />
     <style>
-      html, body {
+      html,
+      body {
         height: 100%;
       }
       body {
@@ -40,14 +41,17 @@
         <h1 class="mb-0">Gestão de Tipos de Tarefas</h1>
       </div>
     </header>
-    
 
     <!-- Main Content -->
     <main class="container mb-4">
-
       <!-- Botão de Criar -->
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <button class="btn btn-success" id="create-type-button" data-bs-toggle="modal" data-bs-target="#modalCriarTipo">
+        <button
+          class="btn btn-success"
+          id="create-type-button"
+          data-bs-toggle="modal"
+          data-bs-target="#modalCriarTipo"
+        >
           <i class="bi bi-plus-circle-fill"></i> Criar Tipo de Tarefa
         </button>
       </div>
@@ -62,7 +66,20 @@
               <th>Ações</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
+            <!-- Exemplo -->
+            <tr>
+              <td>1</td>
+              <td>Desenvolvimento</td>
+              <td>
+                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalEditarTipo">
+                  <i class="bi bi-pencil-fill"></i> Editar
+                </button>
+                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalApagarTipo">
+                  <i class="bi bi-trash-fill"></i> Apagar
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -71,24 +88,135 @@
     </main>
 
     <!-- Modal Criar Tipo de Tarefa -->
-    <div class="modal fade" id="modalCriarTipo" tabindex="-1" aria-labelledby="modalTipoLabel" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="modalCriarTipo"
+      tabindex="-1"
+      aria-labelledby="modalTipoLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header bg-success text-white">
             <h5 class="modal-title" id="modalTipoLabel">Novo Tipo de Tarefa</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"
+            ></button>
           </div>
           <div class="modal-body">
             <form>
               <div class="mb-3">
                 <label for="nomeTipo" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nomeTipo" placeholder="Ex: Análise, Desenvolvimento...">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nomeTipo"
+                  placeholder="Ex: Análise, Desenvolvimento..."
+                />
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
             <button type="button" class="btn btn-success">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Editar Tipo de Tarefa -->
+    <div
+      class="modal fade"
+      id="modalEditarTipo"
+      tabindex="-1"
+      aria-labelledby="modalEditarTipoLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-warning text-white">
+            <h5 class="modal-title" id="modalEditarTipoLabel">
+              Editar Tipo de Tarefa
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="editarNomeTipo" class="form-label">Nome</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editarNomeTipo"
+                  value="Ex: Desenvolvimento"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-warning">
+              Guardar Alterações
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Confirmar Apagar Tipo -->
+    <div
+      class="modal fade"
+      id="modalApagarTipo"
+      tabindex="-1"
+      aria-labelledby="modalApagarTipoLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="modalApagarTipoLabel">
+              Confirmar Apagamento
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Fechar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>Tens a certeza que queres apagar este tipo de tarefa?</p>
+            <p><strong>Desenvolvimento</strong></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-danger">Apagar</button>
           </div>
         </div>
       </div>
@@ -98,9 +226,11 @@
     <footer class="bg-dark text-white text-center py-3 mt-auto">
       <div class="container">
         <p class="mb-1">&copy; 2025 Sistema de Gestão</p>
-        <small>Projeto desenvolvido por: David Fernandes, João Rôlo, Sorin Revenco</small>
+        <small
+          >Projeto desenvolvido por: David Fernandes, João Rôlo, Sorin
+          Revenco</small
+        >
       </div>
     </footer>
-
   </body>
 </html>
