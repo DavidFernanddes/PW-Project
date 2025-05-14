@@ -1,38 +1,14 @@
 import Type from '../classes/type.js';
 
 const taskTypes = [];
-const modalElement = document.getElementById('modalCriarTipo');
-const modalInstance = new bootstrap.Modal(modalElement);
+const modalCreate = document.getElementById('modalCriarTipo');
+const modalCreateInstance = new bootstrap.Modal(modalCreate);
 
-function handleCreateType() {
-    modalInstance.show();
+const modalEdit = document.getElementById('modalEditarTipo');
+const modalEditInstance = new bootstrap.Modal(modalEdit);
 
-    const saveButton = modalElement.querySelector('.btn-success');
-    const inputField = document.getElementById('nomeTipo');
-
-    const saveHandler = () => {
-        const typeName = inputField.value.trim();
-        if (!typeName) {
-            alert('Por favor, insira um nome válido.');
-            return;
-        }
-
-        try {
-            const newType = new Type().Criar(typeName);
-            taskTypes.push(newType);
-            addTypeToTable(newType);
-            modalInstance.hide();
-            inputField.value = '';
-        } catch (error) {
-            alert(error.message);
-        } finally {
-            saveButton.removeEventListener('click', saveHandler);
-        }
-    };
-
-    saveButton.addEventListener('click', saveHandler);
-}
-
+const modalDelete = document.getElementById('modalApagarTipo');
+const modalDeleteInstance = new bootstrap.Modal(modalDelete);
 
 function addTypeToTable(type) {
     const tableBody = document.querySelector('tbody');
@@ -55,6 +31,7 @@ function addTypeToTable(type) {
     editIcon.className = 'bi bi-pencil-fill';
     editButton.appendChild(editIcon);
     editButton.appendChild(document.createTextNode(' Editar'));
+    editButton.addEventListener('click', () => handleEditType(type.getTypeId()));
     actionsCell.appendChild(editButton);
 
     const deleteButton = document.createElement('button');
@@ -63,6 +40,7 @@ function addTypeToTable(type) {
     deleteIcon.className = 'bi bi-trash-fill';
     deleteButton.appendChild(deleteIcon);
     deleteButton.appendChild(document.createTextNode(' Apagar'));
+    deleteButton.addEventListener('click', () => handleDeleteType(type.getTypeId()));
     actionsCell.appendChild(deleteButton);
 
     row.appendChild(actionsCell);
@@ -70,35 +48,50 @@ function addTypeToTable(type) {
     tableBody.appendChild(row);
 }
 
-function handleDeleteType(id) {
-    try {
-        if (!confirm('Tem certeza que deseja apagar este tipo?')) {
+function handleCreateType() {
+    modalCreateInstance.show();
+
+    const saveButton = modalCreate.querySelector('.btn-success');
+    const inputField = document.getElementById('nomeTipo');
+
+    const saveHandler = () => {
+        const typeName = inputField.value.trim();
+        if (!typeName) {
+            alert('Por favor, insira um nome válido.');
             return;
         }
-        const updatedTypes = new Type().Apagar(id, taskTypes);
-        taskTypes.length = 0;
-        taskTypes.push(...updatedTypes);
 
-        alert('Tipo apagado com sucesso');
-        const tableBody = document.querySelector('tbody');
-        const rowToDelete = Array.from(tableBody.querySelectorAll('tr')).find(row => {
-            const idCell = row.querySelector('td:first-child');
-            return idCell && idCell.textContent === id.toString();
-        });
-        if (rowToDelete) {
-            tableBody.removeChild(rowToDelete);
+        try {
+            const newType = new Type().Criar(typeName);
+            taskTypes.push(newType);
+            addTypeToTable(newType);
+            modalCreateInstance.hide();
+            inputField.value = '';
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            saveButton.removeEventListener('click', saveHandler);
         }
-    } catch (error) {
-        alert(error.message);
-    }
+    };
+
+    saveButton.addEventListener('click', saveHandler);
 }
 
-function handleEditType(id) {   
-    const newTypeName = prompt('Digite o novo nome do tipo de tarefa:');
-    if (newTypeName) {
+
+
+function handleEditType(id) {  
+    modalEditInstance.show();
+    const editButton = modalEdit.querySelector('.btn-warning');
+    const inputField = document.getElementById('editarNomeTipo');
+
+    const editHandeler = () => {
+        const newTypeName = inputField.value.trim();
         try {
             const updatedType = new Type().Editar(id, newTypeName);
             const tableBody = document.querySelector('tbody');
+            modalEditInstance.hide();
+            inputField.value = '';
+
             const rowToEdit = Array.from(tableBody.querySelectorAll('tr')).find(row => {
                 const idCell = row.querySelector('td:first-child');
                 return idCell && idCell.textContent === id.toString();
@@ -107,30 +100,55 @@ function handleEditType(id) {
                 const nameCell = rowToEdit.querySelector('td:nth-child(2)');
                 nameCell.textContent = updatedType.getName();
             }
-            alert('Tipo editado com sucesso');
         } catch (error) {
             alert(error.message);
+        } finally {
+            editButton.removeEventListener('click', editHandeler);
         }
+    };
+
+    editButton.addEventListener('click', editHandeler);
+}
+
+function handleDeleteType(id) {
+    const typeToDelete = taskTypes.find(t => t.getTypeId() === id);
+    const modalBodyText = modalDelete.querySelector('.modal-body strong');
+    if (typeToDelete && modalBodyText) {
+        modalBodyText.textContent = typeToDelete.getName();
     }
+
+    modalDeleteInstance.show();
+
+    const deleteButton = modalDelete.querySelector('.btn-danger');
+
+    const deleteHandler = () => {
+        try {
+            const updatedTypes = new Type().Apagar(id, taskTypes);
+            taskTypes.length = 0;
+            taskTypes.push(...updatedTypes);
+            modalDeleteInstance.hide();
+
+            const tableBody = document.querySelector('tbody');
+            const rowToDelete = Array.from(tableBody.querySelectorAll('tr')).find(row => {
+            const idCell = row.querySelector('td:first-child');
+            return idCell && idCell.textContent === id.toString();
+            });
+            if (rowToDelete) {
+                tableBody.removeChild(rowToDelete);
+            }
+        } catch (error) { 
+            alert(error.message);
+        } finally {
+            deleteButton.removeEventListener('click', deleteHandler);
+        }
+    };
+
+    deleteButton.addEventListener('click', deleteHandler);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     const createTypeButton = document.getElementById('create-type-button');
     if (createTypeButton) {
         createTypeButton.addEventListener('click', handleCreateType);
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const deleteTypeButon = document.getElementById('delete-type-button');
-    if (deleteTypeButon) {
-        deleteTypeButon.addEventListener('click', handleDeleteType);
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const editTypeButon = document.getElementById('edit-type-button');
-    if (editTypeButon) {
-        editTypeButon.addEventListener('click', handleEditType);
     }
 });
