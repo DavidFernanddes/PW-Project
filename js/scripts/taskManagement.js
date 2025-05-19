@@ -92,9 +92,11 @@ function handleCreateTask() {
     const userInput = document.getElementById("utilizador");
     const completedInput = document.getElementById("concluida");
 
-    const saveHandler = () => {
+    const saveHandler = (e) => {
+        e.preventDefault();
+
         const name = nameInput.value.trim();
-        const endDate = endDateInput.value.trim();
+        const endDate = endDateInput.value;
         const description = descriptionInput.value.trim();
         const username = userInput.value.trim();
         const completed = completedInput.checked;
@@ -119,13 +121,12 @@ function handleCreateTask() {
             completedInput.checked = false;
         } catch (error) {
             alert(error.message);
-        } finally {
-            saveButton.removeEventListener("click", saveHandler);
         }
     };
 
-    saveButton.removeEventListener("click", saveHandler);
-    saveButton.addEventListener("click", saveHandler);
+    const newSaveButton = saveButton.cloneNode(true);
+    saveButton.parentNode.replaceChild(newSaveButton, saveButton);
+    newSaveButton.addEventListener("click", saveHandler);
 }
 
 function handleEditTask(taskName) {
@@ -205,6 +206,14 @@ function handleDeleteTask(taskName) {
 
     const modal = document.getElementById("modalApagarTarefa");
     const confirmDeleteButton = modal.querySelector(".btn-danger");
+
+    const modalBody = modal.querySelector(".modal-body");
+    if (modalBody) {
+        modalBody.innerHTML = `
+            <p>Tens a certeza que queres apagar esta tarefa?</p>
+            <p><strong>${task.getName()}</strong> - ${task.getUser()}</p>
+        `;
+    }
 
     const newButton = confirmDeleteButton.cloneNode(true);
     confirmDeleteButton.parentNode.replaceChild(newButton, confirmDeleteButton);
