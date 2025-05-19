@@ -121,9 +121,22 @@ function handleEditType(id) {
 
 function handleDeleteType(id) {
     const typeToDelete = taskTypes.find(t => t.getTypeId() === id);
-    const modalBodyText = modalDelete.querySelector('.modal-body strong');
-    if (typeToDelete && modalBodyText) {
-        modalBodyText.textContent = typeToDelete.getName();
+
+    const modalBody = modalDelete.querySelector('.modal-body');
+    if (modalBody && typeToDelete) {
+        while (modalBody.firstChild) {
+            modalBody.removeChild(modalBody.firstChild);
+        }
+
+        const p1 = document.createElement('p');
+        p1.textContent = 'Tens a certeza que queres apagar este tipo de tarefa?';
+        modalBody.appendChild(p1);
+
+        const p2 = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = typeToDelete.getName();
+        p2.appendChild(strong);
+        modalBody.appendChild(p2);
     }
 
     modalDeleteInstance.show();
@@ -139,13 +152,13 @@ function handleDeleteType(id) {
 
             const tableBody = document.querySelector('tbody');
             const rowToDelete = Array.from(tableBody.querySelectorAll('tr')).find(row => {
-            const idCell = row.querySelector('td:first-child');
-            return idCell && idCell.textContent === id.toString();
+                const idCell = row.querySelector('td:first-child');
+                return idCell && idCell.textContent === id.toString();
             });
             if (rowToDelete) {
                 tableBody.removeChild(rowToDelete);
             }
-        } catch (error) { 
+        } catch (error) {
             alert(error.message);
         } finally {
             deleteButton.removeEventListener('click', deleteHandler);

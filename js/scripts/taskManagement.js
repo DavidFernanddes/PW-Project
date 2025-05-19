@@ -209,10 +209,21 @@ function handleDeleteTask(taskName) {
 
     const modalBody = modal.querySelector(".modal-body");
     if (modalBody) {
-        modalBody.innerHTML = `
-            <p>Tens a certeza que queres apagar esta tarefa?</p>
-            <p><strong>${task.getName()}</strong> - ${task.getUser()}</p>
-        `;
+
+        while (modalBody.firstChild) {
+            modalBody.removeChild(modalBody.firstChild);
+        }
+        
+        const p1 = document.createElement("p");
+        p1.textContent = "Tens a certeza que queres apagar esta tarefa?";
+        modalBody.appendChild(p1);
+
+        const p2 = document.createElement("p");
+        const strong = document.createElement("strong");
+        strong.textContent = task.getName();
+        p2.appendChild(strong);
+        p2.appendChild(document.createTextNode(" - " + task.getUser()));
+        modalBody.appendChild(p2);
     }
 
     const newButton = confirmDeleteButton.cloneNode(true);
