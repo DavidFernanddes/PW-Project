@@ -1,4 +1,4 @@
-class Task {
+export default class Task {
     static currentId = 1;
     #id
     #name

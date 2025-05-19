@@ -1,6 +1,6 @@
 import User from '../classes/user.js';
 
-export const users = [];
+const users = [];
 let modalCreate, modalEdit, modalDelete;
 let modalCreateInstance, modalEditInstance, modalDeleteInstance;
 
@@ -159,12 +159,12 @@ function handleEditUser(username) {
             });
 
             if (rowToEdit) {
-                rowToEdit.querySelector('td:nth-child(2)').textContent = newName;   // Nome
-                rowToEdit.querySelector('td:nth-child(3)').textContent = newUsername; // Username
+                rowToEdit.querySelector('td:nth-child(2)').textContent = newName;
+                rowToEdit.querySelector('td:nth-child(3)').textContent = newUsername;
                 const activeCell = rowToEdit.querySelector('td:nth-child(4) span');
                 activeCell.textContent = newActive ? 'Sim' : 'Não';
                 activeCell.className = `badge ${newActive ? 'bg-success' : 'bg-secondary'}`;
-                rowToEdit.querySelector('td:nth-child(5)').textContent = newRole;   // Role
+                rowToEdit.querySelector('td:nth-child(5)').textContent = newRole;
             }
 
             modalEditInstance.hide();
