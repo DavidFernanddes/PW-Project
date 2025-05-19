@@ -74,16 +74,30 @@ function addUserToTable(user) {
 }
 
 function handleCreateUser() {
-    modalCreateInstance.show();
-
-    const saveButton = modalCreate.querySelector('.btn-success');
-
     const nameInput = document.getElementById('nome');
     const usernameInput = document.getElementById('username');
     const activeInput = document.getElementById('ativo');
     const roleInput = document.getElementById('create-role');
+    nameInput.value = '';
+    usernameInput.value = '';
+    activeInput.checked = false;
 
-    const saveHandler = () => {
+    if (roleInput.querySelector('option[value=""]')) {
+        roleInput.value = '';
+    } else if (roleInput.querySelector('option[value="Escolha uma opção"]')) {
+        roleInput.value = 'Escolha uma opção';
+    } else {
+        roleInput.selectedIndex = 0;
+    }
+
+    modalCreateInstance.show();
+
+    const saveButton = modalCreate.querySelector('.btn-success');
+
+    const newSaveButton = saveButton.cloneNode(true);
+    saveButton.parentNode.replaceChild(newSaveButton, saveButton);
+
+    newSaveButton.addEventListener("click", () => {
         const name = nameInput.value.trim();
         const username = usernameInput.value.trim();
         const active = activeInput.checked;
@@ -103,16 +117,17 @@ function handleCreateUser() {
             nameInput.value = '';
             usernameInput.value = '';
             activeInput.checked = false;
-            roleInput.value = 'Escolha uma opção';
+            if (roleInput.querySelector('option[value=""]')) {
+                roleInput.value = '';
+            } else if (roleInput.querySelector('option[value="Escolha uma opção"]')) {
+                roleInput.value = 'Escolha uma opção';
+            } else {
+                roleInput.selectedIndex = 0;
+            }
         } catch (error) {
             alert(error.message);
-        } finally {
-            saveButton.removeEventListener('click', saveHandler);
         }
-    };
-
-    saveButton.removeEventListener('click', saveHandler);
-    saveButton.addEventListener('click', saveHandler);
+    });
 }
 
 function handleEditUser(username) {

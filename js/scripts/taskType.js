@@ -1,6 +1,6 @@
 import Type from '../classes/type.js';
 
-const taskTypes = [];
+const taskTypes = Type.types; // Use the static array from Type
 let modalCreate, modalEdit, modalDelete;
 let modalCreateInstance, modalEditInstance, modalDeleteInstance;
 
@@ -71,32 +71,36 @@ function handleCreateType() {
         }
 
         try {
-            const newType = new Type().Criar(typeName);
-            taskTypes.push(newType);
+            const newType = Type.Criar(typeName);
             addTypeToTable(newType);
             modalCreateInstance.hide();
             inputField.value = '';
         } catch (error) {
             alert(error.message);
-        } finally {
-            saveButton.removeEventListener('click', saveHandler);
         }
     };
 
-    saveButton.addEventListener('click', saveHandler);
+    const newSaveButton = saveButton.cloneNode(true);
+    saveButton.parentNode.replaceChild(newSaveButton, saveButton);
+    newSaveButton.addEventListener("click", saveHandler);
 }
 
-
-
-function handleEditType(id) {  
+function handleEditType(id) {
     modalEditInstance.show();
     const editButton = modalEdit.querySelector('.btn-warning');
     const inputField = document.getElementById('editarNomeTipo');
 
-    const editHandeler = () => {
+    const typeToEdit = Type.types.find(t => t.getTypeId() === id);
+    if (typeToEdit) {
+        inputField.value = typeToEdit.getName();
+    } else {
+        inputField.value = '';
+    }
+
+    const editHandler = () => {
         const newTypeName = inputField.value.trim();
         try {
-            const updatedType = new Type().Editar(id, newTypeName);
+            const updatedType = Type.Editar(id, newTypeName);
             const tableBody = document.querySelector('tbody');
             modalEditInstance.hide();
             inputField.value = '';
@@ -112,15 +116,15 @@ function handleEditType(id) {
         } catch (error) {
             alert(error.message);
         } finally {
-            editButton.removeEventListener('click', editHandeler);
+            editButton.removeEventListener('click', editHandler);
         }
     };
 
-    editButton.addEventListener('click', editHandeler);
+    editButton.addEventListener('click', editHandler);
 }
 
 function handleDeleteType(id) {
-    const typeToDelete = taskTypes.find(t => t.getTypeId() === id);
+    const typeToDelete = Type.types.find(t => t.getTypeId() === id);
 
     const modalBody = modalDelete.querySelector('.modal-body');
     if (modalBody && typeToDelete) {
@@ -145,9 +149,7 @@ function handleDeleteType(id) {
 
     const deleteHandler = () => {
         try {
-            const updatedTypes = new Type().Apagar(id, taskTypes);
-            taskTypes.length = 0;
-            taskTypes.push(...updatedTypes);
+            Type.Apagar(id, []);
             modalDeleteInstance.hide();
 
             const tableBody = document.querySelector('tbody');

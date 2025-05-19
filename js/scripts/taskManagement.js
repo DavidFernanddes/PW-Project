@@ -84,7 +84,7 @@ function handleCreateTask() {
     const modal = document.getElementById("modalCriarTarefa");
     modalCreateInstance.show();
 
-    const saveButton = modal.querySelector(".btn-success");
+    const saveButton = modalCreate.querySelector('.btn-success');
 
     const nameInput = document.getElementById("nome");
     const descriptionInput = document.getElementById("descricao");

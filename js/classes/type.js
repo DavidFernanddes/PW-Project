@@ -1,5 +1,5 @@
 export default class Type {
-    static typeId = 0;
+    static typeId = 1;
     static types = [];
     #id;
     #name;
@@ -21,7 +21,7 @@ export default class Type {
         this.#name = name;
     }
 
-    Criar(name) {
+    static Criar(name) {
         if (Type.types.find(type => type.getName().toLowerCase() === name.toLowerCase())) {
             throw new Error('Já existe um tipo com este nome. Escolha outro nome.');
         }
@@ -30,7 +30,7 @@ export default class Type {
         return newType;
     }
 
-    Editar(id, name) {
+    static Editar(id, name) {
         const typeToEdit = Type.types.find(type => type.getTypeId() === id);
         if (!typeToEdit) {
             throw new Error('Tipo não encontrado');
@@ -47,7 +47,7 @@ export default class Type {
         return typeToEdit;
     }
 
-    Apagar(id, tasks) {
+    static Apagar(id, tasks) {
         const index = Type.types.findIndex(type => type.getTypeId() === id);
         if (index === -1) {
             throw new Error('Tipo não encontrado');
