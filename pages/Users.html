@@ -37,6 +37,7 @@
   </head>
 
   <body class="bg-light">
+    <script type="module" src="../js/scripts/users.js"></script>
     <!-- Header -->
     <header class="bg-primary text-white py-4 mb-3">
       <div class="container text-center">
@@ -50,6 +51,7 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <button
           class="btn btn-success"
+          id="create-user-button"
           data-bs-toggle="modal"
           data-bs-target="#modalCriarUtilizador"
         >
@@ -71,30 +73,6 @@
             </tr>
           </thead>
           <tbody class="text-center">
-            <!-- Exemplo -->
-            <tr>
-              <td>1</td>
-              <td>Ana Silva</td>
-              <td>asilva</td>
-              <td><span class="badge bg-success">Sim</span></td>
-              <td>Administrador</td>
-              <td class="text-center">
-                <button
-                  class="btn btn-sm btn-warning me-1"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalEditarUtilizador"
-                >
-                  <i class="bi bi-pencil-fill"></i> Editar
-                </button>
-                <button
-                  class="btn btn-sm btn-danger"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalApagarUtilizador"
-                >
-                  <i class="bi bi-trash-fill"></i> Apagar
-                </button>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -148,11 +126,11 @@
               </div>
               <div class="mb-3">
                 <label for="role" class="form-label">Role</label>
-                <select class="form-select" id="role">
-                  <option selected disabled>Escolha uma opção</option>
-                  <option value="admin">Administrador</option>
-                  <option value="editor">Editor</option>
-                  <option value="leitor">Leitor</option>
+                <select id="create-role" class="form-select">
+                  <option value="">Escolha uma opção</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Utilizador">Utilizador</option>
+                  <option value="Gestor">Gestor</option>
                 </select>
               </div>
             </form>
@@ -198,7 +176,6 @@
                   type="text"
                   class="form-control"
                   id="edit-nome"
-                  value="Ana Silva"
                 />
               </div>
               <div class="mb-3">
@@ -207,7 +184,6 @@
                   type="text"
                   class="form-control"
                   id="edit-username"
-                  value="asilva"
                 />
               </div>
               <div class="mb-3 form-check">
@@ -221,10 +197,11 @@
               </div>
               <div class="mb-3">
                 <label for="edit-role" class="form-label">Role</label>
-                <select class="form-select" id="edit-role">
-                  <option value="admin" selected>Administrador</option>
-                  <option value="editor">Editor</option>
-                  <option value="leitor">Leitor</option>
+                <select id="edit-role" class="form-select">
+                  <option value="">Escolha uma opção</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Utilizador">Utilizador</option>
+                  <option value="Gestor">Gestor</option>
                 </select>
               </div>
             </form>

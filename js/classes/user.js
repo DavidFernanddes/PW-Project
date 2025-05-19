@@ -1,5 +1,7 @@
+import Roles from '../enum/roles.js';
+
 export default class User {
-    static currentId = 0;
+    static currentId = 1;
     #id
     #name
     #username
