@@ -128,7 +128,71 @@ function handleCreateTask() {
     saveButton.addEventListener("click", saveHandler);
 }
 
-function handleEditTask(taskName) { }
+function handleEditTask(taskName) {
+    const task = tasks.find((t) => t.getName() === taskName);
+    if (!task) {
+        alert("Tarefa não encontrada.");
+        return;
+    }
+
+    modalEditInstance.show();
+
+    const modal = document.getElementById("modalEditarTarefa");
+    const nameInput = document.getElementById("editarNome");
+    const endDateInput = document.getElementById("editarDataFim");
+    const descriptionInput = document.getElementById("editarDescricao");
+    const userInput = document.getElementById("editarUtilizador");
+    const completedInput = document.getElementById("editarConcluida");
+    const saveButton = modal.querySelector(".btn-warning");
+
+    nameInput.value = task.getName();
+    endDateInput.value = task.getEndDate();
+    descriptionInput.value = task.getDescription();
+    userInput.value = task.getUser();
+    completedInput.checked = task.getCompleted();
+
+
+    const newSaveButton = saveButton.cloneNode(true);
+    saveButton.parentNode.replaceChild(newSaveButton, saveButton);
+
+    newSaveButton.addEventListener("click", () => {
+        const newName = nameInput.value.trim();
+        const newEndDate = endDateInput.value.trim();
+        const newDescription = descriptionInput.value.trim();
+        const newUser = userInput.value.trim();
+        const newCompleted = completedInput.checked;
+
+        if (!newName || !newEndDate || !newUser) {
+            alert("Por favor, preencha os campos obrigatórios: nome, data fim e utilizador.");
+            return;
+        }
+
+        task.setName(newName);
+        task.setEndDate(newEndDate);
+        task.setDescription(newDescription);
+        task.setUser(newUser);
+        task.setCompleted(newCompleted);
+
+        const tableBody = document.querySelector("tbody");
+        const rowToUpdate = Array.from(tableBody.querySelectorAll("tr")).find(
+            (row) => {
+                const nameCell = row.querySelector("td:nth-child(2)");
+                return nameCell && nameCell.textContent === taskName;
+            }
+        );
+        if (rowToUpdate) {
+            rowToUpdate.querySelector("td:nth-child(2)").textContent = newName;
+            rowToUpdate.querySelector("td:nth-child(3)").textContent = newDescription;
+            rowToUpdate.querySelector("td:nth-child(4)").textContent = newEndDate;
+            const completedCell = rowToUpdate.querySelector("td:nth-child(5) span");
+            completedCell.className = `badge ${newCompleted ? "bg-success" : "bg-secondary"}`;
+            completedCell.textContent = newCompleted ? "Sim" : "Não";
+            rowToUpdate.querySelector("td:nth-child(6)").textContent = newUser;
+        }
+
+        modalEditInstance.hide();
+    });
+}
 
 function handleDeleteTask(taskName) {
     const task = tasks.find((t) => t.getName() === taskName);
@@ -139,9 +203,13 @@ function handleDeleteTask(taskName) {
 
     modalDeleteInstance.show();
 
+    const modal = document.getElementById("modalApagarTarefa");
     const confirmDeleteButton = modal.querySelector(".btn-danger");
 
-    const confirmHandler = () => {
+    const newButton = confirmDeleteButton.cloneNode(true);
+    confirmDeleteButton.parentNode.replaceChild(newButton, confirmDeleteButton);
+
+    newButton.addEventListener("click", () => {
         const index = tasks.findIndex((t) => t.getName() === taskName);
         if (index !== -1) {
             tasks.splice(index, 1);
@@ -159,10 +227,5 @@ function handleDeleteTask(taskName) {
         }
 
         modalDeleteInstance.hide();
-        confirmDeleteButton.removeEventListener("click", confirmHandler);
-    };
-
-    confirmDeleteButton.replaceWith(confirmDeleteButton.cloneNode(true));
-    const newButton = modal.querySelector(".btn-danger");
-    newButton.addEventListener("click", confirmHandler);
+    });
 }
