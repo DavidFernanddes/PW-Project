@@ -1,14 +1,23 @@
 import User from '../classes/user.js';
 
-const users = [];
-const modalCreate = document.getElementById('modalCriarUtilizador');
-const modalCreateInstance = new bootstrap.Modal(modalCreate);
+export const users = [];
+let modalCreate, modalEdit, modalDelete;
+let modalCreateInstance, modalEditInstance, modalDeleteInstance;
 
-const modalEdit = document.getElementById('modalEditarUtilizador');
-const modalEditInstance = new bootstrap.Modal(modalEdit);
+document.addEventListener('DOMContentLoaded', () => {
+    modalCreate = document.getElementById('modalCriarUtilizador');
+    modalEdit = document.getElementById('modalEditarUtilizador');
+    modalDelete = document.getElementById('modalApagarUtilizador');
 
-const modalDelete = document.getElementById('modalApagarUtilizador');
-const modalDeleteInstance = new bootstrap.Modal(modalDelete);
+    modalCreateInstance = new bootstrap.Modal(modalCreate);
+    modalEditInstance = new bootstrap.Modal(modalEdit);
+    modalDeleteInstance = new bootstrap.Modal(modalDelete);
+
+    const createUserButton = document.getElementById('create-user-button');
+    if (createUserButton) {
+        createUserButton.addEventListener('click', handleCreateUser);
+    }
+});
 
 function addUserToTable(user) {
     const tableBody = document.querySelector('tbody');
@@ -207,11 +216,3 @@ function handleDeleteUser(username) {
     confirmDeleteButton.removeEventListener('click', newConfirmHandler);
     confirmDeleteButton.addEventListener('click', newConfirmHandler);
 }
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const createUserButton = document.getElementById('create-user-button');
-    if (createUserButton) {
-        createUserButton.addEventListener('click', handleCreateUser);
-    }
-});

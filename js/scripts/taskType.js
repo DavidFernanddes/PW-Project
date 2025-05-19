@@ -1,14 +1,23 @@
 import Type from '../classes/type.js';
 
 const taskTypes = [];
-const modalCreate = document.getElementById('modalCriarTipo');
-const modalCreateInstance = new bootstrap.Modal(modalCreate);
+let modalCreate, modalEdit, modalDelete;
+let modalCreateInstance, modalEditInstance, modalDeleteInstance;
 
-const modalEdit = document.getElementById('modalEditarTipo');
-const modalEditInstance = new bootstrap.Modal(modalEdit);
+document.addEventListener('DOMContentLoaded', () => {
+    modalCreate = document.getElementById('modalCriarTipo');
+    modalEdit = document.getElementById('modalEditarTipo');
+    modalDelete = document.getElementById('modalApagarTipo');
 
-const modalDelete = document.getElementById('modalApagarTipo');
-const modalDeleteInstance = new bootstrap.Modal(modalDelete);
+    modalCreateInstance = new bootstrap.Modal(modalCreate);
+    modalEditInstance = new bootstrap.Modal(modalEdit);
+    modalDeleteInstance = new bootstrap.Modal(modalDelete);
+
+    const createTypeButton = document.getElementById('create-type-button');
+    if (createTypeButton) {
+        createTypeButton.addEventListener('click', handleCreateType);
+    }
+});
 
 function addTypeToTable(type) {
     const tableBody = document.querySelector('tbody');
@@ -145,10 +154,3 @@ function handleDeleteType(id) {
 
     deleteButton.addEventListener('click', deleteHandler);
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const createTypeButton = document.getElementById('create-type-button');
-    if (createTypeButton) {
-        createTypeButton.addEventListener('click', handleCreateType);
-    }
-});
