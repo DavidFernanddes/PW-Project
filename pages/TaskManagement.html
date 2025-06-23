@@ -50,7 +50,7 @@
       </button>
       <div>
         <label for="filter" class="form-label me-2 mb-0">Filtrar:</label>
-        <select id="filter" class="form-select d-inline-block w-auto" onchange="alert('Filtrar Tarefas')">
+        <select id="filter" class="form-select d-inline-block w-auto">
           <option value="all">Todas</option>
           <option value="in-progress">Em curso</option>
           <option value="completed">Concluídas</option>
@@ -69,6 +69,7 @@
             <th>Data Fim</th>
             <th>Concluída</th>
             <th>Utilizador</th>
+            <th>Tipo</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -77,7 +78,7 @@
     </div>
 
     <!-- Mensagem de Erro -->
-    <p class="text-danger mt-3" id="error-message"></p>
+    <p class="text-danger mt-3" id="error-message" style="display: none;"></p>
   </main>
 
   <!-- Modal Criar Tarefa -->
@@ -92,21 +93,29 @@
           <form>
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" placeholder="Ex: Relatório Final" />
+                <label for="nome" class="form-label">Nome *</label>
+                <input type="text" class="form-control" id="nome" placeholder="Ex: Relatório Final" required />
               </div>
               <div class="col-md-6 mb-3">
-                <label for="dataFim" class="form-label">Data Fim</label>
-                <input type="date" class="form-control" id="dataFim" />
+                <label for="dataFim" class="form-label">Data Fim *</label>
+                <input type="date" class="form-control" id="dataFim" required />
               </div>
             </div>
             <div class="mb-3">
               <label for="descricao" class="form-label">Descrição</label>
-              <textarea class="form-control" id="descricao" rows="3"></textarea>
+              <textarea class="form-control" id="descricao" rows="3" placeholder="Descrição da tarefa (opcional)"></textarea>
             </div>
-            <div class="mb-3">
-              <label for="utilizador" class="form-label">Utilizador</label>
-              <input type="text" class="form-control" id="utilizador" placeholder="Ex: Ana Silva" />
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="utilizador" class="form-label">Utilizador *</label>
+                <input type="text" class="form-control" id="utilizador" placeholder="Ex: Ana Silva" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="tipoTarefa" class="form-label">Tipo de Tarefa</label>
+                <select class="form-select" id="tipoTarefa">
+                  <option value="">Selecione um tipo (opcional)</option>
+                </select>
+              </div>
             </div>
             <div class="form-check mb-3">
               <input class="form-check-input" type="checkbox" id="concluida" />
@@ -138,22 +147,29 @@
           <form>
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="editarNome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="editarNome" value="Relatório Final" />
+                <label for="editarNome" class="form-label">Nome *</label>
+                <input type="text" class="form-control" id="editarNome" required />
               </div>
               <div class="col-md-6 mb-3">
-                <label for="editarDataFim" class="form-label">Data Fim</label>
-                <input type="date" class="form-control" id="editarDataFim" value="2025-06-01" />
+                <label for="editarDataFim" class="form-label">Data Fim *</label>
+                <input type="date" class="form-control" id="editarDataFim" required />
               </div>
             </div>
             <div class="mb-3">
               <label for="editarDescricao" class="form-label">Descrição</label>
-              <textarea class="form-control" id="editarDescricao" rows="3">
-Preparar o documento de entrega do projeto.</textarea>
+              <textarea class="form-control" id="editarDescricao" rows="3"></textarea>
             </div>
-            <div class="mb-3">
-              <label for="editarUtilizador" class="form-label">Utilizador</label>
-              <input type="text" class="form-control" id="editarUtilizador" value="João Rôlo" />
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="editarUtilizador" class="form-label">Utilizador *</label>
+                <input type="text" class="form-control" id="editarUtilizador" required />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="editarTipoTarefa" class="form-label">Tipo de Tarefa</label>
+                <select class="form-select" id="editarTipoTarefa">
+                  <option value="">Selecione um tipo (opcional)</option>
+                </select>
+              </div>
             </div>
             <div class="form-check mb-3">
               <input class="form-check-input" type="checkbox" id="editarConcluida" />

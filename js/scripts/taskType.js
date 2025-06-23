@@ -1,36 +1,66 @@
 import Type from '../classes/type.js';
+import Task from '../classes/task.js';
 
-const taskTypes = Type.types; // Use the static array from Type
 let modalCreate, modalEdit, modalDelete;
 let modalCreateInstance, modalEditInstance, modalDeleteInstance;
 
 document.addEventListener('DOMContentLoaded', () => {
+    initializeModals();
+    setupEventListeners();
+    loadExistingTypes();
+});
+
+function initializeModals() {
     modalCreate = document.getElementById('modalCriarTipo');
     modalEdit = document.getElementById('modalEditarTipo');
     modalDelete = document.getElementById('modalApagarTipo');
 
-    modalCreateInstance = new bootstrap.Modal(modalCreate);
-    modalEditInstance = new bootstrap.Modal(modalEdit);
-    modalDeleteInstance = new bootstrap.Modal(modalDelete);
+    if (typeof bootstrap !== 'undefined') {
+        modalCreateInstance = new bootstrap.Modal(modalCreate);
+        modalEditInstance = new bootstrap.Modal(modalEdit);
+        modalDeleteInstance = new bootstrap.Modal(modalDelete);
+    }
+}
 
+function setupEventListeners() {
     const createTypeButton = document.getElementById('create-type-button');
     if (createTypeButton) {
         createTypeButton.addEventListener('click', handleCreateType);
     }
-});
+}
+
+function loadExistingTypes() {
+    const types = Type.ListarTodos();
+    updateTypeTable(types);
+}
+
+function updateTypeTable(types) {
+    const tableBody = document.querySelector('tbody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
+    types.forEach(type => {
+        addTypeToTable(type);
+    });
+}
 
 function addTypeToTable(type) {
     const tableBody = document.querySelector('tbody');
+    if (!tableBody) return;
+
     const row = document.createElement('tr');
 
+    // ID
     const idCell = document.createElement('td');
     idCell.textContent = type.getTypeId();
     row.appendChild(idCell);
 
+    // Nome
     const nameCell = document.createElement('td');
     nameCell.textContent = type.getName();
     row.appendChild(nameCell);
 
+    // Ações
     const actionsCell = document.createElement('td');
     actionsCell.className = 'text-center';
 
@@ -53,84 +83,75 @@ function addTypeToTable(type) {
     actionsCell.appendChild(deleteButton);
 
     row.appendChild(actionsCell);
-
     tableBody.appendChild(row);
 }
 
 function handleCreateType() {
+    if (!modalCreateInstance) return;
+
+    // Limpar campo
+    document.getElementById('nomeTipo').value = '';
+
     modalCreateInstance.show();
 
     const saveButton = modalCreate.querySelector('.btn-success');
-    const inputField = document.getElementById('nomeTipo');
+    const newSaveButton = saveButton.cloneNode(true);
+    saveButton.parentNode.replaceChild(newSaveButton, saveButton);
 
-    const saveHandler = () => {
-        const typeName = inputField.value.trim();
-        if (!typeName) {
-            alert('Por favor, insira um nome válido.');
-            return;
-        }
+    newSaveButton.addEventListener("click", () => {
+        const typeName = document.getElementById('nomeTipo').value.trim();
 
         try {
             const newType = Type.Criar(typeName);
             addTypeToTable(newType);
             modalCreateInstance.hide();
-            inputField.value = '';
+            showSuccess('Tipo de tarefa criado com sucesso!');
         } catch (error) {
-            alert(error.message);
+            showError(error.message);
         }
-    };
-
-    const newSaveButton = saveButton.cloneNode(true);
-    saveButton.parentNode.replaceChild(newSaveButton, saveButton);
-    newSaveButton.addEventListener("click", saveHandler);
+    });
 }
 
 function handleEditType(id) {
-    modalEditInstance.show();
-    const editButton = modalEdit.querySelector('.btn-warning');
-    const inputField = document.getElementById('editarNomeTipo');
-
-    const typeToEdit = Type.types.find(t => t.getTypeId() === id);
-    if (typeToEdit) {
-        inputField.value = typeToEdit.getName();
-    } else {
-        inputField.value = '';
+    const typeToEdit = Type.ListarPorId(id);
+    if (!typeToEdit) {
+        showError('Tipo não encontrado.');
+        return;
     }
 
-    const editHandler = () => {
-        const newTypeName = inputField.value.trim();
+    modalEditInstance.show();
+
+    // Preencher campo
+    document.getElementById('editarNomeTipo').value = typeToEdit.getName();
+
+    const editButton = modalEdit.querySelector('.btn-warning');
+    const newEditButton = editButton.cloneNode(true);
+    editButton.parentNode.replaceChild(newEditButton, editButton);
+
+    newEditButton.addEventListener('click', () => {
+        const newTypeName = document.getElementById('editarNomeTipo').value.trim();
+        
         try {
-            const updatedType = Type.Editar(id, newTypeName);
-            const tableBody = document.querySelector('tbody');
+            Type.Editar(id, newTypeName);
+            updateTypeTable(Type.ListarTodos());
             modalEditInstance.hide();
-            inputField.value = '';
-
-            const rowToEdit = Array.from(tableBody.querySelectorAll('tr')).find(row => {
-                const idCell = row.querySelector('td:first-child');
-                return idCell && idCell.textContent === id.toString();
-            });
-            if (rowToEdit) {
-                const nameCell = rowToEdit.querySelector('td:nth-child(2)');
-                nameCell.textContent = updatedType.getName();
-            }
+            showSuccess('Tipo de tarefa editado com sucesso!');
         } catch (error) {
-            alert(error.message);
-        } finally {
-            editButton.removeEventListener('click', editHandler);
+            showError(error.message);
         }
-    };
-
-    editButton.addEventListener('click', editHandler);
+    });
 }
 
 function handleDeleteType(id) {
-    const typeToDelete = Type.types.find(t => t.getTypeId() === id);
+    const typeToDelete = Type.ListarPorId(id);
+    if (!typeToDelete) {
+        showError('Tipo não encontrado.');
+        return;
+    }
 
     const modalBody = modalDelete.querySelector('.modal-body');
-    if (modalBody && typeToDelete) {
-        while (modalBody.firstChild) {
-            modalBody.removeChild(modalBody.firstChild);
-        }
+    if (modalBody) {
+        modalBody.innerHTML = '';
 
         const p1 = document.createElement('p');
         p1.textContent = 'Tens a certeza que queres apagar este tipo de tarefa?';
@@ -146,26 +167,45 @@ function handleDeleteType(id) {
     modalDeleteInstance.show();
 
     const deleteButton = modalDelete.querySelector('.btn-danger');
+    const newDeleteButton = deleteButton.cloneNode(true);
+    deleteButton.parentNode.replaceChild(newDeleteButton, deleteButton);
 
-    const deleteHandler = () => {
+    newDeleteButton.addEventListener('click', () => {
         try {
-            Type.Apagar(id, []);
+            const allTasks = Task.ListarTodas();
+            Type.Apagar(id, allTasks);
+            updateTypeTable(Type.ListarTodos());
             modalDeleteInstance.hide();
-
-            const tableBody = document.querySelector('tbody');
-            const rowToDelete = Array.from(tableBody.querySelectorAll('tr')).find(row => {
-                const idCell = row.querySelector('td:first-child');
-                return idCell && idCell.textContent === id.toString();
-            });
-            if (rowToDelete) {
-                tableBody.removeChild(rowToDelete);
-            }
+            showSuccess('Tipo de tarefa apagado com sucesso!');
         } catch (error) {
-            alert(error.message);
-        } finally {
-            deleteButton.removeEventListener('click', deleteHandler);
+            showError(error.message);
         }
-    };
+    });
+}
 
-    deleteButton.addEventListener('click', deleteHandler);
+function showError(message) {
+    const errorElement = document.getElementById("error-message");
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = "block";
+        setTimeout(() => {
+            errorElement.style.display = "none";
+        }, 5000);
+    } else {
+        alert(message);
+    }
+}
+
+function showSuccess(message) {
+    const successElement = document.createElement("div");
+    successElement.className = "alert alert-success mt-3";
+    successElement.textContent = message;
+    
+    const container = document.querySelector("main .container");
+    if (container) {
+        container.appendChild(successElement);
+        setTimeout(() => {
+            successElement.remove();
+        }, 3000);
+    }
 }

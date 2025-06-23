@@ -1,40 +1,70 @@
 import User from '../classes/user.js';
 
-export const users = [];
 let modalCreate, modalEdit, modalDelete;
 let modalCreateInstance, modalEditInstance, modalDeleteInstance;
 
 document.addEventListener('DOMContentLoaded', () => {
+    initializeModals();
+    setupEventListeners();
+    loadExistingUsers();
+});
+
+function initializeModals() {
     modalCreate = document.getElementById('modalCriarUtilizador');
     modalEdit = document.getElementById('modalEditarUtilizador');
     modalDelete = document.getElementById('modalApagarUtilizador');
 
-    modalCreateInstance = new bootstrap.Modal(modalCreate);
-    modalEditInstance = new bootstrap.Modal(modalEdit);
-    modalDeleteInstance = new bootstrap.Modal(modalDelete);
+    if (typeof bootstrap !== 'undefined') {
+        modalCreateInstance = new bootstrap.Modal(modalCreate);
+        modalEditInstance = new bootstrap.Modal(modalEdit);
+        modalDeleteInstance = new bootstrap.Modal(modalDelete);
+    }
+}
 
+function setupEventListeners() {
     const createUserButton = document.getElementById('create-user-button');
     if (createUserButton) {
         createUserButton.addEventListener('click', handleCreateUser);
     }
-});
+}
+
+function loadExistingUsers() {
+    const users = User.ListarTodos();
+    updateUserTable(users);
+}
+
+function updateUserTable(users) {
+    const tableBody = document.querySelector('tbody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
+    users.forEach(user => {
+        addUserToTable(user);
+    });
+}
 
 function addUserToTable(user) {
     const tableBody = document.querySelector('tbody');
+    if (!tableBody) return;
+
     const row = document.createElement('tr');
 
+    // ID
     const idCell = document.createElement('td');
     idCell.textContent = user.getId();
     row.appendChild(idCell);
 
+    // Nome
     const nameCell = document.createElement('td');
     nameCell.textContent = user.getName();
     row.appendChild(nameCell);
 
+    // Username
     const usernameCell = document.createElement('td');
     usernameCell.textContent = user.getUsername();
     row.appendChild(usernameCell);
 
+    // Ativo
     const activeCell = document.createElement('td');
     const activeBadge = document.createElement('span');
     activeBadge.className = `badge ${user.getActive() ? 'bg-success' : 'bg-secondary'}`;
@@ -42,31 +72,31 @@ function addUserToTable(user) {
     activeCell.appendChild(activeBadge);
     row.appendChild(activeCell);
 
+    // Role
     const roleCell = document.createElement('td');
     roleCell.textContent = user.getRole();
     row.appendChild(roleCell);
 
+    // Ações
     const actionsCell = document.createElement('td');
     actionsCell.className = 'text-center';
 
     const editButton = document.createElement('button');
     editButton.className = 'btn btn-sm btn-warning me-1';
-
     const editIcon = document.createElement('i');
     editIcon.className = 'bi bi-pencil-fill';
     editButton.appendChild(editIcon);
     editButton.appendChild(document.createTextNode(' Editar'));
-    editButton.addEventListener('click', () => handleEditUser(user.getUsername()));
+    editButton.addEventListener('click', () => handleEditUser(user.getId()));
     actionsCell.appendChild(editButton);
 
     const deleteButton = document.createElement('button');
     deleteButton.className = 'btn btn-sm btn-danger';
-
     const deleteIcon = document.createElement('i');
     deleteIcon.className = 'bi bi-trash-fill';
     deleteButton.appendChild(deleteIcon);
     deleteButton.appendChild(document.createTextNode(' Apagar'));
-    deleteButton.addEventListener('click', () => handleDeleteUser(user.getUsername()));
+    deleteButton.addEventListener('click', () => handleDeleteUser(user.getId()));
     actionsCell.appendChild(deleteButton);
 
     row.appendChild(actionsCell);
@@ -74,160 +104,128 @@ function addUserToTable(user) {
 }
 
 function handleCreateUser() {
-    const nameInput = document.getElementById('nome');
-    const usernameInput = document.getElementById('username');
-    const activeInput = document.getElementById('ativo');
-    const roleInput = document.getElementById('create-role');
-    nameInput.value = '';
-    usernameInput.value = '';
-    activeInput.checked = false;
+    if (!modalCreateInstance) return;
 
-    if (roleInput.querySelector('option[value=""]')) {
-        roleInput.value = '';
-    } else if (roleInput.querySelector('option[value="Escolha uma opção"]')) {
-        roleInput.value = 'Escolha uma opção';
-    } else {
-        roleInput.selectedIndex = 0;
-    }
+    // Limpar campos
+    document.getElementById('nome').value = '';
+    document.getElementById('username').value = '';
+    document.getElementById('ativo').checked = false;
+    const roleSelect = document.getElementById('create-role');
+    if (roleSelect) roleSelect.value = '';
 
     modalCreateInstance.show();
 
     const saveButton = modalCreate.querySelector('.btn-success');
-
     const newSaveButton = saveButton.cloneNode(true);
     saveButton.parentNode.replaceChild(newSaveButton, saveButton);
 
     newSaveButton.addEventListener("click", () => {
-        const name = nameInput.value.trim();
-        const username = usernameInput.value.trim();
-        const active = activeInput.checked;
-        const role = roleInput.value;
-
-        if (!name || !username || !role || role === 'Escolha uma opção') {
-            alert('Por favor, preencha todos os campos obrigatórios.');
-            return;
-        }
+        const name = document.getElementById('nome').value.trim();
+        const username = document.getElementById('username').value.trim();
+        const active = document.getElementById('ativo').checked;
+        const role = roleSelect ? roleSelect.value : '';
 
         try {
-            const password = '';
-            const user = new User(name, username, password, active, role);
-            users.push(user);
+            const user = User.Criar(name, username, '', active, role);
             addUserToTable(user);
             modalCreateInstance.hide();
-            nameInput.value = '';
-            usernameInput.value = '';
-            activeInput.checked = false;
-            if (roleInput.querySelector('option[value=""]')) {
-                roleInput.value = '';
-            } else if (roleInput.querySelector('option[value="Escolha uma opção"]')) {
-                roleInput.value = 'Escolha uma opção';
-            } else {
-                roleInput.selectedIndex = 0;
-            }
+            showSuccess('Utilizador criado com sucesso!');
         } catch (error) {
-            alert(error.message);
+            showError(error.message);
         }
     });
 }
 
-function handleEditUser(username) {
-    modalEditInstance.show();
-
-    const user = users.find(u => u.getUsername() === username);
+function handleEditUser(userId) {
+    const user = User.ListarPorId(userId);
     if (!user) {
-        alert('Utilizador não encontrado.');
+        showError('Utilizador não encontrado.');
         return;
     }
 
-    const nameInput = document.getElementById('edit-nome');
-    const usernameInput = document.getElementById('edit-username');
-    const activeInput = document.getElementById('edit-ativo');
-    const roleInput = document.getElementById('edit-role');
+    modalEditInstance.show();
+
+    // Preencher campos
+    document.getElementById('edit-nome').value = user.getName();
+    document.getElementById('edit-username').value = user.getUsername();
+    document.getElementById('edit-ativo').checked = user.getActive();
+    const roleSelect = document.getElementById('edit-role');
+    if (roleSelect) roleSelect.value = user.getRole();
+
     const saveButton = modalEdit.querySelector('.btn-warning');
+    const newSaveButton = saveButton.cloneNode(true);
+    saveButton.parentNode.replaceChild(newSaveButton, saveButton);
 
-    nameInput.value = user.getName();
-    usernameInput.value = user.getUsername();
-    activeInput.checked = user.getActive();
-    roleInput.value = user.getRole();
-
-    const saveHandler = () => {
-        const newName = nameInput.value.trim();
-        const newUsername = usernameInput.value.trim();
-        const newActive = activeInput.checked;
-        const newRole = roleInput.value;
-
-        if (!newName || !newUsername || !newRole) {
-            alert('Todos os campos são obrigatórios.');
-            return;
-        }
+    newSaveButton.addEventListener('click', () => {
+        const newName = document.getElementById('edit-nome').value.trim();
+        const newUsername = document.getElementById('edit-username').value.trim();
+        const newActive = document.getElementById('edit-ativo').checked;
+        const newRole = roleSelect ? roleSelect.value : '';
 
         try {
-            user.setName(newName);
-            user.setUsername(newUsername);
-            user.setActive(newActive);
-            user.setRole(newRole);
-
-            const tableBody = document.querySelector('tbody');
-            const rowToEdit = Array.from(tableBody.querySelectorAll('tr')).find(row => {
-                const usernameCell = row.querySelector('td:nth-child(3)');
-                return usernameCell && usernameCell.textContent === username;
-            });
-
-            if (rowToEdit) {
-                rowToEdit.querySelector('td:nth-child(2)').textContent = newName;   // Nome
-                rowToEdit.querySelector('td:nth-child(3)').textContent = newUsername; // Username
-                const activeCell = rowToEdit.querySelector('td:nth-child(4) span');
-                activeCell.textContent = newActive ? 'Sim' : 'Não';
-                activeCell.className = `badge ${newActive ? 'bg-success' : 'bg-secondary'}`;
-                rowToEdit.querySelector('td:nth-child(5)').textContent = newRole;   // Role
-            }
-
+            User.Editar(userId, newName, newUsername, '', newActive, newRole);
+            updateUserTable(User.ListarTodos());
             modalEditInstance.hide();
+            showSuccess('Utilizador editado com sucesso!');
         } catch (error) {
-            alert(error.message);
-        } finally {
-            saveButton.removeEventListener('click', saveHandler);
+            showError(error.message);
         }
-    };
-
-    saveButton.removeEventListener('click', saveHandler);
-    saveButton.addEventListener('click', saveHandler);
+    });
 }
 
-function handleDeleteUser(username) {
-    const user = users.find(u => u.getUsername() === username);
+function handleDeleteUser(userId) {
+    const user = User.ListarPorId(userId);
     if (!user) {
-        alert('Utilizador não encontrado.');
+        showError('Utilizador não encontrado.');
         return;
     }
 
     const modalBody = modalDelete.querySelector('.modal-body p strong');
-    modalBody.textContent = `"${user.getName()}"`;
+    if (modalBody) {
+        modalBody.textContent = `"${user.getName()}"`;
+    }
 
     modalDeleteInstance.show();
 
     const confirmDeleteButton = modalDelete.querySelector('.btn-danger');
+    const newConfirmButton = confirmDeleteButton.cloneNode(true);
+    confirmDeleteButton.parentNode.replaceChild(newConfirmButton, confirmDeleteButton);
 
-    const newConfirmHandler = () => {
-        const index = users.findIndex(u => u.getUsername() === username);
-        if (index !== -1) {
-            users.splice(index, 1);
+    newConfirmButton.addEventListener('click', () => {
+        try {
+            User.Apagar(userId);
+            updateUserTable(User.ListarTodos());
+            modalDeleteInstance.hide();
+            showSuccess('Utilizador apagado com sucesso!');
+        } catch (error) {
+            showError(error.message);
         }
+    });
+}
 
-        const tableBody = document.querySelector('tbody');
-        const rowToDelete = Array.from(tableBody.querySelectorAll('tr')).find(row => {
-            const usernameCell = row.querySelector('td:nth-child(3)');
-            return usernameCell && usernameCell.textContent === username;
-        });
-        if (rowToDelete) {
-            tableBody.removeChild(rowToDelete);
-        }
+function showError(message) {
+    const errorElement = document.getElementById("error-message");
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = "block";
+        setTimeout(() => {
+            errorElement.style.display = "none";
+        }, 5000);
+    } else {
+        alert(message);
+    }
+}
 
-        modalDeleteInstance.hide();
-
-        confirmDeleteButton.removeEventListener('click', newConfirmHandler);
-    };
-
-    confirmDeleteButton.removeEventListener('click', newConfirmHandler);
-    confirmDeleteButton.addEventListener('click', newConfirmHandler);
+function showSuccess(message) {
+    const successElement = document.createElement("div");
+    successElement.className = "alert alert-success mt-3";
+    successElement.textContent = message;
+    
+    const container = document.querySelector("main .container");
+    if (container) {
+        container.appendChild(successElement);
+        setTimeout(() => {
+            successElement.remove();
+        }, 3000);
+    }
 }
