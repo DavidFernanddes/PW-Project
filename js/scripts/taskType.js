@@ -184,28 +184,63 @@ function handleDeleteType(id) {
 }
 
 function showError(message) {
-    const errorElement = document.getElementById("error-message");
-    if (errorElement) {
-        errorElement.textContent = message;
-        errorElement.style.display = "block";
-        setTimeout(() => {
-            errorElement.style.display = "none";
-        }, 5000);
-    } else {
-        alert(message);
-    }
+  const toastContainer = document.querySelector(".toast-container");
+  if (!toastContainer) return;
+
+  const toastId = `toast-error-${Date.now()}`;
+
+  const toastHTML = `
+    <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+      <div class="toast-header bg-danger text-white">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong class="me-auto">Erro</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+    </div>
+  `;
+
+  toastContainer.insertAdjacentHTML("beforeend", toastHTML);
+
+  const toastElement = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(toastElement);
+
+  toastElement.addEventListener("hidden.bs.toast", () => {
+    toastElement.remove();
+  });
+
+  toast.show();
 }
 
 function showSuccess(message) {
-    const successElement = document.createElement("div");
-    successElement.className = "alert alert-success mt-3";
-    successElement.textContent = message;
-    
-    const container = document.querySelector("main .container");
-    if (container) {
-        container.appendChild(successElement);
-        setTimeout(() => {
-            successElement.remove();
-        }, 3000);
-    }
+  const toastContainer = document.querySelector(".toast-container");
+  if (!toastContainer) return;
+
+  const toastId = `toast-success-${Date.now()}`;
+
+  const toastHTML = `
+    <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+      <div class="toast-header bg-success text-white">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong class="me-auto">Sucesso</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+    </div>
+  `;
+
+  toastContainer.insertAdjacentHTML("beforeend", toastHTML);
+
+  const toastElement = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(toastElement);
+
+  toastElement.addEventListener("hidden.bs.toast", () => {
+    toastElement.remove();
+  });
+
+  toast.show();
 }
