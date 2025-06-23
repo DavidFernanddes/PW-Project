@@ -109,15 +109,15 @@ app.use((req, res) => {
 async function startServer() {
   try {
     await db.execute('SELECT 1');
-    console.log('✅ Conexão com a base de dados estabelecida');
+    console.log('Conexão com a base de dados estabelecida');
     
     app.listen(PORT, () => {
-      console.log(`🚀 Servidor a correr na porta ${PORT}`);
-      console.log(`📱 Frontend disponível em: http://localhost:${PORT}`);
-      console.log(`🔗 API disponível em: http://localhost:${PORT}/api`);
+      console.log(`Servidor a correr na porta ${PORT}`);
+      console.log(`Frontend disponível em: http://localhost:${PORT}`);
+      console.log(`API disponível em: http://localhost:${PORT}/api`);
     });
   } catch (error) {
-    console.error('❌ Erro ao conectar com a base de dados:', error);
+    console.error('Erro ao conectar com a base de dados:', error);
     process.exit(1);
   }
 }
