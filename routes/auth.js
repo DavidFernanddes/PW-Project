@@ -9,8 +9,11 @@ const router = express.Router();
 
 // POST /api/auth/login
 router.post('/login', validateLogin, (req, res, next) => {
+  console.log('🔍 Tentativa de login:', req.body.username);
+  
   // Check if user is already logged in
   if (req.isAuthenticated()) {
+    console.log('✅ Utilizador já autenticado:', req.user.username);
     return res.json({
       success: true,
       message: 'Já está autenticado',
@@ -25,7 +28,7 @@ router.post('/login', validateLogin, (req, res, next) => {
 
   passport.authenticate('local', (err, user, info) => {
     if (err) {
-      console.error('Erro no login:', err);
+      console.error('❌ Erro no passport:', err);
       return res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -33,21 +36,25 @@ router.post('/login', validateLogin, (req, res, next) => {
     }
 
     if (!user) {
+      console.log('❌ Autenticação falhada:', info?.message || 'Credenciais inválidas');
       return res.status(401).json({
         success: false,
         message: info.message || 'Credenciais inválidas'
       });
     }
 
+    console.log('✅ Utilizador encontrado:', user.username, 'Role:', user.role);
+
     req.logIn(user, (err) => {
       if (err) {
-        console.error('Erro ao iniciar sessão:', err);
+        console.error('❌ Erro ao iniciar sessão:', err);
         return res.status(500).json({
           success: false,
           message: 'Erro ao iniciar sessão'
         });
       }
 
+      console.log('✅ Sessão iniciada com sucesso para:', user.username);
       return res.json({
         success: true,
         message: 'Login efetuado com sucesso',

@@ -20,27 +20,50 @@ class ApiService {
         try {
             const response = await fetch(url, config);
             
-            // Check if response is HTML (redirect to login page)
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('text/html')) {
-                throw new Error('Sessão expirada. Por favor, faça login novamente.');
+            // Check if response is ok first
+            if (!response.ok) {
+                // Try to get error message from JSON
+                try {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP ${response.status}`);
+                } catch (jsonError) {
+                    throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);
+                }
             }
 
-            let data;
+            // Check content type
+            const contentType = response.headers.get('content-type');
+            
+            // If it's HTML, it means we were redirected (probably to login)
+            if (contentType && contentType.includes('text/html')) {
+                // Only throw session expired for non-login endpoints
+                if (endpoint !== '/auth/login' && endpoint !== '/auth/status') {
+                    throw new Error('Sessão expirada. Por favor, faça login novamente.');
+                }
+                // For login endpoint, this shouldn't happen, so throw generic error
+                throw new Error('Resposta inesperada do servidor');
+            }
+
+            // Try to parse JSON
             try {
-                data = await response.json();
+                const data = await response.json();
+                return data;
             } catch (jsonError) {
+                console.error('Erro ao fazer parse do JSON:', jsonError);
                 throw new Error('Resposta inválida do servidor');
             }
 
-            if (!response.ok) {
-                throw new Error(data.message || `HTTP ${response.status}`);
-            }
-
-            return data;
         } catch (error) {
+            // If it's already our custom error, re-throw it
+            if (error.message.includes('Sessão expirada') || 
+                error.message.includes('HTTP') || 
+                error.message.includes('Resposta inválida')) {
+                throw error;
+            }
+            
+            // For network errors or other issues
             console.error('API Request Error:', error);
-            throw error;
+            throw new Error('Erro de comunicação com o servidor');
         }
     }
 

@@ -15,7 +15,7 @@ async function setupAdmin() {
       database: process.env.DB_NAME || 'gestao_tarefas'
     });
 
-    console.log('✅ Conectado à base de dados');
+    console.log('Conectado à base de dados');
 
     // Check if admin user exists
     const [existingAdmin] = await connection.execute(

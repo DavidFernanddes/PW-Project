@@ -89,36 +89,80 @@ INSERT INTO task_types (name) VALUES
 ('Análise'),
 ('Teste'),
 ('Documentação'),
-('Reunião');
+('Reunião'),
+('Design'),
+('Marketing'),
+('Suporte')
+ON DUPLICATE KEY UPDATE name = VALUES(name);
 
--- Insert sample users
+-- Insert sample users (password: 123456 for all)
+-- Hash gerado com bcrypt rounds=12 para '123456'
 INSERT INTO users (name, username, password, active, role) VALUES 
-('João Silva', 'jsilva', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeAdvqhXiwHEKCvAO', true, 'Utilizador'),
-('Ana Costa', 'acosta', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeAdvqhXiwHEKCvAO', true, 'Gestor'),
-('Pedro Santos', 'psantos', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeAdvqhXiwHEKCvAO', false, 'Utilizador');
+('João Silva', 'jsilva', '$2a$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', true, 'Utilizador'),
+('Ana Costa', 'acosta', '$2a$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', true, 'Gestor'),
+('Pedro Santos', 'psantos', '$2a$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', true, 'Utilizador'),
+('Maria Oliveira', 'moliveira', '$2a$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', true, 'Utilizador'),
+('Carlos Ferreira', 'cferreira', '$2a$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', false, 'Utilizador'),
+('Rita Mendes', 'rmendes', '$2a$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', true, 'Gestor'),
+('Paulo Rodrigues', 'prodrigues', '$2a$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', true, 'Utilizador'),
+('Sofia Almeida', 'salmeida', '$2a$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', false, 'Utilizador')
+ON DUPLICATE KEY UPDATE 
+password = VALUES(password),
+active = VALUES(active),
+role = VALUES(role);
 
--- Insert sample tasks
+-- Insert sample tasks with future dates
 INSERT INTO tasks (name, description, end_date, completed, user_id, type_id, created_by) VALUES 
-('Implementar API REST', 'Desenvolvimento da API para gestão de tarefas', '2025-07-15', false, 2, 1, 1),
-('Revisar documentação', 'Análise e revisão da documentação técnica', '2025-07-10', true, 3, 2, 1),
-('Teste de integração', 'Testes de integração entre frontend e backend', '2025-07-20', false, 4, 3, 2);
+('Implementar API REST', 'Desenvolvimento da API para gestão de tarefas com autenticação e validação', '2025-08-15', false, 2, 1, 1),
+('Revisar documentação técnica', 'Análise e revisão completa da documentação do sistema', '2025-07-25', false, 3, 2, 1),
+('Testes de integração', 'Execução de testes completos entre frontend e backend', '2025-08-10', false, 4, 3, 2),
+('Design da interface', 'Criação de mockups e protótipos para nova funcionalidade', '2025-07-30', true, 5, 6, 2),
+('Reunião de planeamento', 'Reunião semanal para definir prioridades do sprint', '2025-07-02', false, 2, 5, 1),
+('Suporte ao cliente', 'Resolver tickets pendentes do sistema de suporte', '2025-07-05', false, 7, 8, 3),
+('Campanha de marketing', 'Criar conteúdo para redes sociais e newsletter', '2025-08-20', false, 3, 7, 3),
+('Backup da base de dados', 'Configurar sistema de backup automático', '2025-07-15', true, 7, 1, 1),
+('Análise de performance', 'Estudar métricas de performance da aplicação', '2025-07-12', false, 4, 2, 2),
+('Documentar API', 'Criar documentação detalhada dos endpoints', '2025-08-05', false, 2, 4, 1),
+('Teste de segurança', 'Auditoria de segurança do sistema', '2025-07-28', false, 5, 3, 3),
+('Reunião com stakeholders', 'Apresentação do progresso do projeto', '2025-07-08', false, 3, 5, 1)
+ON DUPLICATE KEY UPDATE 
+name = VALUES(name),
+description = VALUES(description),
+end_date = VALUES(end_date),
+completed = VALUES(completed);
 
 -- Create views for common queries
-CREATE VIEW active_users AS
+CREATE OR REPLACE VIEW active_users AS
 SELECT id, name, username, role, created_at
 FROM users 
 WHERE active = true;
 
-CREATE VIEW pending_tasks AS
+CREATE OR REPLACE VIEW pending_tasks AS
 SELECT t.id, t.name, t.description, t.end_date, u.name as user_name, tt.name as type_name
 FROM tasks t
 JOIN users u ON t.user_id = u.id
 LEFT JOIN task_types tt ON t.type_id = tt.id
 WHERE t.completed = false;
 
-CREATE VIEW completed_tasks AS
+CREATE OR REPLACE VIEW completed_tasks AS
 SELECT t.id, t.name, t.description, t.end_date, u.name as user_name, tt.name as type_name
 FROM tasks t
 JOIN users u ON t.user_id = u.id
 LEFT JOIN task_types tt ON t.type_id = tt.id
 WHERE t.completed = true;
+
+-- Create a view for user credentials (for demo purposes)
+CREATE OR REPLACE VIEW user_credentials AS
+SELECT 
+    id,
+    name,
+    username,
+    CASE 
+        WHEN username = 'admin' THEN 'admin123'
+        ELSE '123456'
+    END as demo_password,
+    active,
+    role,
+    created_at
+FROM users
+ORDER BY role DESC, name;
