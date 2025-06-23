@@ -37,10 +37,6 @@
       border-radius: 1rem;
     }
 
-    #login-section {
-      display: none;
-    }
-
     #user-section {
       display: none;
     }
@@ -55,13 +51,6 @@
       <h1 class="mb-0">Sistema de Gestão</h1>
       <p class="lead">Bem-vindo! Aceda facilmente à gestão de utilizadores, tarefas e tipos de tarefas.</p>
       
-      <!-- Login Section -->
-      <div id="login-section" class="mt-3">
-        <button class="btn btn-outline-light" onclick="authService.showLoginModal()">
-          <i class="bi bi-person-circle"></i> Iniciar Sessão
-        </button>
-      </div>
-
       <!-- User Section -->
       <div id="user-section" class="mt-3">
         <div class="d-flex justify-content-center align-items-center gap-3">
@@ -200,45 +189,6 @@
       </div>
     </section>
 
-    <!-- Quick Actions for Authenticated Users -->
-    <section class="row justify-content-center mb-5" id="quick-actions-section" style="display: none;">
-      <div class="col-md-10">
-        <div class="card">
-          <div class="card-header bg-light">
-            <h5 class="mb-0"><i class="bi bi-lightning-fill text-warning"></i> Ações Rápidas</h5>
-          </div>
-          <div class="card-body">
-            <div class="row text-center">
-              <div class="col-md-3">
-                <button class="btn btn-outline-success btn-sm w-100" onclick="window.location.href='/tasks'">
-                  <i class="bi bi-plus-circle"></i><br>
-                  <small>Nova Tarefa</small>
-                </button>
-              </div>
-              <div class="col-md-3" id="create-user-action" style="display: none;">
-                <button class="btn btn-outline-primary btn-sm w-100" onclick="window.location.href='/users'">
-                  <i class="bi bi-person-plus"></i><br>
-                  <small>Novo Utilizador</small>
-                </button>
-              </div>
-              <div class="col-md-3" id="create-type-action" style="display: none;">
-                <button class="btn btn-outline-warning btn-sm w-100" onclick="window.location.href='/types'">
-                  <i class="bi bi-tag"></i><br>
-                  <small>Novo Tipo</small>
-                </button>
-              </div>
-              <div class="col-md-3">
-                <button class="btn btn-outline-info btn-sm w-100" onclick="loadDashboardStats()">
-                  <i class="bi bi-arrow-clockwise"></i><br>
-                  <small>Atualizar</small>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <!-- Toast Container -->
@@ -270,35 +220,21 @@
       const welcomeSection = document.getElementById('welcome-section');
       const navigationSection = document.getElementById('navigation-section');
       const statsSection = document.getElementById('stats-section');
-      const quickActionsSection = document.getElementById('quick-actions-section');
-      const loginSection = document.getElementById('login-section');
       const userSection = document.getElementById('user-section');
-      const createUserAction = document.getElementById('create-user-action');
-      const createTypeAction = document.getElementById('create-type-action');
 
       if (authService.isLoggedIn) {
         welcomeSection.style.display = 'none';
         navigationSection.style.display = 'flex';
         statsSection.style.display = 'flex';
-        quickActionsSection.style.display = 'block';
-        loginSection.style.display = 'none';
         userSection.style.display = 'block';
         
         // Update user info
         document.getElementById('user-name').textContent = authService.user.name;
         document.getElementById('user-role').textContent = authService.user.role;
-
-        // Show admin/manager actions
-        if (authService.isAdminOrManager()) {
-          createUserAction.style.display = 'block';
-          createTypeAction.style.display = 'block';
-        }
       } else {
         welcomeSection.style.display = 'block';
         navigationSection.style.display = 'none';
         statsSection.style.display = 'none';
-        quickActionsSection.style.display = 'none';
-        loginSection.style.display = 'block';
         userSection.style.display = 'none';
       }
     }

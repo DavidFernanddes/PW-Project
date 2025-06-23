@@ -33,6 +33,15 @@ class AuthService {
                 this.user = response.user;
                 this.isLoggedIn = true;
                 this.updateUI();
+                
+                // Trigger page update if on index page
+                if (typeof updatePageContent === 'function') {
+                    updatePageContent();
+                }
+                if (typeof loadDashboardStats === 'function') {
+                    loadDashboardStats();
+                }
+                
                 return response;
             }
             return response;

@@ -9,6 +9,20 @@ const router = express.Router();
 
 // POST /api/auth/login
 router.post('/login', validateLogin, (req, res, next) => {
+  // Check if user is already logged in
+  if (req.isAuthenticated()) {
+    return res.json({
+      success: true,
+      message: 'Já está autenticado',
+      user: {
+        id: req.user.id,
+        name: req.user.name,
+        username: req.user.username,
+        role: req.user.role
+      }
+    });
+  }
+
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       console.error('Erro no login:', err);

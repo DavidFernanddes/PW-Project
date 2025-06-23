@@ -19,7 +19,19 @@ class ApiService {
 
         try {
             const response = await fetch(url, config);
-            const data = await response.json();
+            
+            // Check if response is HTML (redirect to login page)
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('text/html')) {
+                throw new Error('Sessão expirada. Por favor, faça login novamente.');
+            }
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                throw new Error('Resposta inválida do servidor');
+            }
 
             if (!response.ok) {
                 throw new Error(data.message || `HTTP ${response.status}`);
