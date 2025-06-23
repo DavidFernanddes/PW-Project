@@ -39,7 +39,7 @@
   <!-- Main Content -->
   <main class="container mb-4">
     <!-- Botão Voltar ao Início -->
-    <a href="../index.html" class="btn btn-outline-primary my-3">
+    <a href="/" class="btn btn-outline-primary my-3">
       <i class="bi bi-arrow-left-circle"></i> Voltar ao Início
     </a>
 
@@ -107,8 +107,10 @@
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="utilizador" class="form-label">Utilizador *</label>
-                <input type="text" class="form-control" id="utilizador" placeholder="Ex: Ana Silva" required />
+                <label for="utilizadorSelect" class="form-label">Utilizador *</label>
+                <select class="form-select" id="utilizadorSelect" required>
+                  <option value="">Selecione um utilizador</option>
+                </select>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="tipoTarefa" class="form-label">Tipo de Tarefa</label>
@@ -161,8 +163,10 @@
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="editarUtilizador" class="form-label">Utilizador *</label>
-                <input type="text" class="form-control" id="editarUtilizador" required />
+                <label for="editarUtilizadorSelect" class="form-label">Utilizador *</label>
+                <select class="form-select" id="editarUtilizadorSelect" required>
+                  <option value="">Selecione um utilizador</option>
+                </select>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="editarTipoTarefa" class="form-label">Tipo de Tarefa</label>
@@ -213,6 +217,9 @@
     </div>
   </div>
 
+  <!-- Toast Container -->
+  <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100"></div>
+
   <!-- Footer -->
   <footer class="bg-dark text-white text-center py-3 mt-auto">
     <div class="container">
@@ -221,7 +228,11 @@
         Revenco</small>
     </div>
   </footer>
-  <script type="module" src="../js/scripts/taskManagement.js"></script>
+  
+  <!-- Scripts -->
+  <script src="/js/services/api.js"></script>
+  <script src="/js/services/auth.js"></script>
+  <script src="/js/scripts/taskManagement.js"></script>
 </body>
 
 </html>
