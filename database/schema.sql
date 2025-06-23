@@ -76,8 +76,12 @@ CREATE TABLE task_logs (
 );
 
 -- Insert default admin user (password: admin123)
+-- Hash gerado com bcrypt rounds=12 para 'admin123'
 INSERT INTO users (name, username, password, active, role) VALUES 
-('Administrador', 'admin', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeAdvqhXiwHEKCvAO', true, 'Administrador');
+('Administrador', 'admin', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeAdvqhXiwHEKCvAO', true, 'Administrador')
+ON DUPLICATE KEY UPDATE 
+password = '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeAdvqhXiwHEKCvAO',
+active = true;
 
 -- Insert sample task types
 INSERT INTO task_types (name) VALUES 

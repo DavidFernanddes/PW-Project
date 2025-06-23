@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "setup-admin": "node config/setup-admin.js",
+    "setup-db": "mysql -u root -p gestao_tarefas < database/schema.sql",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["api", "rest", "task-management", "nodejs", "express", "mysql"],
