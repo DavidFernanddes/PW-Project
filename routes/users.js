@@ -6,10 +6,10 @@ const { validateUser, validateId } = require('../middleware/validation');
 
 const router = express.Router();
 
-// All routes require authentication
+// Todas as rotas requerem autenticação
 router.use(ensureAuthenticated);
 
-// GET /api/users - List all users
+// GET /api/users - Listar todos os utilizadores
 router.get('/', async (req, res) => {
   try {
     const [rows] = await db.execute(`
@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/users/active - List active users only
+// GET /api/users/active - Listar apenas utilizadores ativos
 router.get('/active', async (req, res) => {
   try {
     const [rows] = await db.execute(`
@@ -58,7 +58,7 @@ router.get('/active', async (req, res) => {
   }
 });
 
-// GET /api/users/:id - Get user by ID
+// GET /api/users/:id - Obter utilizador por ID
 router.get('/:id', validateId, async (req, res) => {
   try {
     const { id } = req.params;
@@ -90,12 +90,12 @@ router.get('/:id', validateId, async (req, res) => {
   }
 });
 
-// POST /api/users - Create new user (Admin/Manager only)
+// POST /api/users - Criar novo utilizador (Apenas Admin/Gestor)
 router.post('/', ensureAdminOrManager, validateUser, async (req, res) => {
   try {
     const { name, username, password, role, active } = req.body;
 
-    // Check if username already exists
+    // Verificar se o username já existe
     const [existingUsers] = await db.execute(
       'SELECT id FROM users WHERE username = ?',
       [username]
@@ -108,16 +108,16 @@ router.post('/', ensureAdminOrManager, validateUser, async (req, res) => {
       });
     }
 
-    // Hash password (default if not provided)
+    // Encriptar password (valor por defeito se não for fornecida)
     const hashedPassword = await bcrypt.hash(password || 'password123', 12);
 
-    // Insert new user
+    // Inserir novo utilizador
     const [result] = await db.execute(`
       INSERT INTO users (name, username, password, role, active) 
       VALUES (?, ?, ?, ?, ?)
     `, [name, username, hashedPassword, role, active || false]);
 
-    // Get the created user
+    // Obter o utilizador criado
     const [newUser] = await db.execute(`
       SELECT id, name, username, active, role, created_at 
       FROM users 
@@ -139,13 +139,13 @@ router.post('/', ensureAdminOrManager, validateUser, async (req, res) => {
   }
 });
 
-// PUT /api/users/:id - Update user (Admin/Manager only)
+// PUT /api/users/:id - Atualizar utilizador (Apenas Admin/Gestor)
 router.put('/:id', ensureAdminOrManager, validateId, validateUser, async (req, res) => {
   try {
     const { id } = req.params;
     const { name, username, password, role, active } = req.body;
 
-    // Check if user exists
+    // Verificar se o utilizador existe
     const [existingUser] = await db.execute(
       'SELECT id FROM users WHERE id = ?',
       [id]
@@ -158,7 +158,7 @@ router.put('/:id', ensureAdminOrManager, validateId, validateUser, async (req, r
       });
     }
 
-    // Check if username already exists (excluding current user)
+    // Verificar se o username já existe (excluindo o próprio utilizador)
     const [duplicateUsers] = await db.execute(
       'SELECT id FROM users WHERE username = ? AND id != ?',
       [username, id]
@@ -171,14 +171,14 @@ router.put('/:id', ensureAdminOrManager, validateId, validateUser, async (req, r
       });
     }
 
-    // Prepare update query
+    // Preparar query de atualização
     let updateQuery = `
       UPDATE users 
       SET name = ?, username = ?, role = ?, active = ?, updated_at = CURRENT_TIMESTAMP
     `;
     let updateParams = [name, username, role, active];
 
-    // Include password if provided
+    // Incluir password se fornecida
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 12);
       updateQuery += ', password = ?';
@@ -190,7 +190,7 @@ router.put('/:id', ensureAdminOrManager, validateId, validateUser, async (req, r
 
     await db.execute(updateQuery, updateParams);
 
-    // Get updated user
+    // Obter utilizador atualizado
     const [updatedUser] = await db.execute(`
       SELECT id, name, username, active, role, updated_at 
       FROM users 
@@ -212,12 +212,12 @@ router.put('/:id', ensureAdminOrManager, validateId, validateUser, async (req, r
   }
 });
 
-// DELETE /api/users/:id - Delete user (Admin only)
+// DELETE /api/users/:id - Eliminar utilizador (Apenas Admin)
 router.delete('/:id', ensureAdminOrManager, validateId, async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Prevent self-deletion
+    // Prevenir autoeliminação
     if (parseInt(id) === req.user.id) {
       return res.status(400).json({
         success: false,
@@ -225,7 +225,7 @@ router.delete('/:id', ensureAdminOrManager, validateId, async (req, res) => {
       });
     }
 
-    // Check if user exists
+    // Verificar se o utilizador existe
     const [existingUser] = await db.execute(
       'SELECT id, name FROM users WHERE id = ?',
       [id]
@@ -238,7 +238,7 @@ router.delete('/:id', ensureAdminOrManager, validateId, async (req, res) => {
       });
     }
 
-    // Check if user has associated tasks
+    // Verificar se o utilizador tem tarefas associadas
     const [userTasks] = await db.execute(
       'SELECT COUNT(*) as task_count FROM tasks WHERE user_id = ? OR created_by = ?',
       [id, id]
@@ -251,7 +251,7 @@ router.delete('/:id', ensureAdminOrManager, validateId, async (req, res) => {
       });
     }
 
-    // Delete user
+    // Eliminar utilizador
     await db.execute('DELETE FROM users WHERE id = ?', [id]);
 
     res.json({

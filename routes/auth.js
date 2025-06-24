@@ -9,11 +9,8 @@ const router = express.Router();
 
 // POST /api/auth/login
 router.post('/login', validateLogin, (req, res, next) => {
-  console.log('🔍 Tentativa de login:', req.body.username);
-  
-  // Check if user is already logged in
+  // Verifica se o utilizador já está autenticado
   if (req.isAuthenticated()) {
-    console.log('✅ Utilizador já autenticado:', req.user.username);
     return res.json({
       success: true,
       message: 'Já está autenticado',
@@ -28,7 +25,7 @@ router.post('/login', validateLogin, (req, res, next) => {
 
   passport.authenticate('local', (err, user, info) => {
     if (err) {
-      console.error('❌ Erro no passport:', err);
+      console.error('Erro no login:', err);
       return res.status(500).json({
         success: false,
         message: 'Erro interno do servidor'
@@ -36,25 +33,21 @@ router.post('/login', validateLogin, (req, res, next) => {
     }
 
     if (!user) {
-      console.log('❌ Autenticação falhada:', info?.message || 'Credenciais inválidas');
       return res.status(401).json({
         success: false,
         message: info.message || 'Credenciais inválidas'
       });
     }
 
-    console.log('✅ Utilizador encontrado:', user.username, 'Role:', user.role);
-
     req.logIn(user, (err) => {
       if (err) {
-        console.error('❌ Erro ao iniciar sessão:', err);
+        console.error('Erro ao iniciar sessão:', err);
         return res.status(500).json({
           success: false,
           message: 'Erro ao iniciar sessão'
         });
       }
 
-      console.log('✅ Sessão iniciada com sucesso para:', user.username);
       return res.json({
         success: true,
         message: 'Login efetuado com sucesso',
@@ -133,10 +126,10 @@ router.get('/status', (req, res) => {
   });
 });
 
-// POST /api/auth/register (for admin to create users)
+// POST /api/auth/register (apenas para o administrador criar utilizadores)
 router.post('/register', ensureAuthenticated, async (req, res) => {
   try {
-    // Only admin can create users
+    // Apenas o administrador pode criar utilizadores
     if (req.user.role !== 'Administrador') {
       return res.status(403).json({
         success: false,
@@ -146,7 +139,7 @@ router.post('/register', ensureAuthenticated, async (req, res) => {
 
     const { name, username, password, role, active } = req.body;
 
-    // Check if username already exists
+    // Verifica se o username já existe
     const [existingUsers] = await db.execute(
       'SELECT id FROM users WHERE username = ?',
       [username]
@@ -159,10 +152,10 @@ router.post('/register', ensureAuthenticated, async (req, res) => {
       });
     }
 
-    // Hash password
+    // Encripta a palavra-passe
     const hashedPassword = await bcrypt.hash(password || 'password123', 12);
 
-    // Insert new user
+    // Insere novo utilizador
     const [result] = await db.execute(
       'INSERT INTO users (name, username, password, role, active) VALUES (?, ?, ?, ?, ?)',
       [name, username, hashedPassword, role, active || false]

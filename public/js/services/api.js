@@ -1,11 +1,11 @@
-// API Service for Task Management System
+// Serviço API para Sistema de Gestão de Tarefas
 class ApiService {
     constructor() {
         this.baseUrl = '/api';
         this.currentUser = null;
     }
 
-    // Helper method for making HTTP requests
+    // Método auxiliar para efectuar pedidos HTTP
     async request(endpoint, options = {}) {
         const url = `${this.baseUrl}${endpoint}`;
         const config = {
@@ -20,9 +20,9 @@ class ApiService {
         try {
             const response = await fetch(url, config);
             
-            // Check if response is ok first
+            // Verifica se a resposta é válida primeiro
             if (!response.ok) {
-                // Try to get error message from JSON
+                // Tenta obter mensagem de erro do JSON
                 try {
                     const errorData = await response.json();
                     throw new Error(errorData.message || `HTTP ${response.status}`);
@@ -31,20 +31,20 @@ class ApiService {
                 }
             }
 
-            // Check content type
+            // Verifica o tipo de conteúdo
             const contentType = response.headers.get('content-type');
             
-            // If it's HTML, it means we were redirected (probably to login)
+            // Se for HTML, significa que fomos redireccionados (provavelmente para login)
             if (contentType && contentType.includes('text/html')) {
-                // Only throw session expired for non-login endpoints
+                // Só lança sessão expirada para endpoints que não sejam de login
                 if (endpoint !== '/auth/login' && endpoint !== '/auth/status') {
                     throw new Error('Sessão expirada. Por favor, faça login novamente.');
                 }
-                // For login endpoint, this shouldn't happen, so throw generic error
+                // Para o endpoint de login, isto não deveria acontecer, por isso lança erro genérico
                 throw new Error('Resposta inesperada do servidor');
             }
 
-            // Try to parse JSON
+            // Tenta fazer parse do JSON
             try {
                 const data = await response.json();
                 return data;
@@ -54,20 +54,20 @@ class ApiService {
             }
 
         } catch (error) {
-            // If it's already our custom error, re-throw it
+            // Se já for o nosso erro personalizado, relança-o
             if (error.message.includes('Sessão expirada') || 
                 error.message.includes('HTTP') || 
                 error.message.includes('Resposta inválida')) {
                 throw error;
             }
             
-            // For network errors or other issues
-            console.error('API Request Error:', error);
+            // Para erros de rede ou outros problemas
+            console.error('Erro no Pedido API:', error);
             throw new Error('Erro de comunicação com o servidor');
         }
     }
 
-    // Authentication methods
+    // Métodos de autenticação
     async login(username, password) {
         const response = await this.request('/auth/login', {
             method: 'POST',
@@ -115,7 +115,7 @@ class ApiService {
         }
     }
 
-    // User methods
+    // Métodos de utilizador
     async getUsers() {
         return await this.request('/users');
     }
@@ -148,7 +148,7 @@ class ApiService {
         });
     }
 
-    // Task Type methods
+    // Métodos de Tipo de Tarefa
     async getTaskTypes() {
         return await this.request('/types');
     }
@@ -177,7 +177,7 @@ class ApiService {
         });
     }
 
-    // Task methods
+    // Métodos de Tarefa
     async getTasks(filters = {}) {
         const queryParams = new URLSearchParams();
         Object.keys(filters).forEach(key => {
@@ -220,7 +220,7 @@ class ApiService {
         });
     }
 
-    // Utility methods
+    // Métodos utilitários
     isAuthenticated() {
         return this.currentUser !== null;
     }
@@ -242,5 +242,5 @@ class ApiService {
     }
 }
 
-// Create global instance
+// Cria instância global
 const apiService = new ApiService();

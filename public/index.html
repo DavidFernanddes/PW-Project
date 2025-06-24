@@ -45,13 +45,13 @@
 
 <body>
 
-  <!-- Header -->
+  <!-- Cabeçalho -->
   <header class="bg-primary text-white py-4 mb-3">
     <div class="container text-center">
       <h1 class="mb-0">Sistema de Gestão</h1>
-      <p class="lead">Bem-vindo! Aceda facilmente às suas tarefas.</p>
+      <p class="lead">Bem-vindo! Aceda facilmente à gestão de utilizadores, tarefas e tipos de tarefas.</p>
       
-      <!-- User Section -->
+      <!-- Secção do Utilizador -->
       <div id="user-section" class="mt-3">
         <div class="d-flex justify-content-center align-items-center gap-3">
           <span id="user-info">
@@ -68,7 +68,7 @@
 
   <main class="container">
 
-    <!-- Dashboard Stats -->
+    <!-- Estatísticas do Dashboard -->
     <section class="row text-center mb-5" id="stats-section" style="display: none;">
       <div class="col-md-4">
         <div class="card dashboard-card border-primary">
@@ -96,7 +96,7 @@
       </div>
     </section>
 
-    <!-- Welcome Message for Non-Authenticated Users -->
+    <!-- Mensagem de Boas-vindas para Utilizadores Não Autenticados -->
     <section class="text-center mb-5" id="welcome-section">
       <div class="row justify-content-center">
         <div class="col-md-8">
@@ -110,34 +110,35 @@
               <p class="text-muted mb-4">
                 Este sistema permite gerir utilizadores, tarefas e tipos de tarefas de forma eficiente e segura.
               </p>
-              <div class="row text-start">
+              
+              <div class="row text-start mb-4">
                 <div class="col-md-6">
-                  <h5><i class="bi bi-check-circle text-success"></i> Funcionalidades</h5>
-                  <ul class="list-unstyled">
-                    <li><i class="bi bi-arrow-right text-primary"></i> Gestão de Utilizadores</li>
-                    <li><i class="bi bi-arrow-right text-primary"></i> Gestão de Tarefas</li>
-                    <li><i class="bi bi-arrow-right text-primary"></i> Tipos de Tarefas</li>
-                    <li><i class="bi bi-arrow-right text-primary"></i> Dashboard com Estatísticas</li>
+                  <h6 class="text-success mb-2"><i class="bi bi-check-circle me-1"></i>Funcionalidades</h6>
+                  <ul class="list-unstyled small">
+                    <li><i class="bi bi-arrow-right text-primary me-1"></i>Gestão de Utilizadores</li>
+                    <li><i class="bi bi-arrow-right text-primary me-1"></i>Gestão de Tarefas</li>
+                    <li><i class="bi bi-arrow-right text-primary me-1"></i>Tipos de Tarefas</li>
+                    <li><i class="bi bi-arrow-right text-primary me-1"></i>Dashboard com Estatísticas</li>
                   </ul>
                 </div>
                 <div class="col-md-6">
-                  <h5><i class="bi bi-shield-check text-success"></i> Segurança</h5>
-                  <ul class="list-unstyled">
-                    <li><i class="bi bi-arrow-right text-primary"></i> Autenticação Segura</li>
-                    <li><i class="bi bi-arrow-right text-primary"></i> Controlo de Permissões</li>
-                    <li><i class="bi bi-arrow-right text-primary"></i> Logs de Auditoria</li>
-                    <li><i class="bi bi-arrow-right text-primary"></i> Validação de Dados</li>
+                  <h6 class="text-success mb-2"><i class="bi bi-shield-check me-1"></i>Segurança</h6>
+                  <ul class="list-unstyled small">
+                    <li><i class="bi bi-arrow-right text-primary me-1"></i>Autenticação Segura</li>
+                    <li><i class="bi bi-arrow-right text-primary me-1"></i>Controlo de Permissões</li>
+                    <li><i class="bi bi-arrow-right text-primary me-1"></i>Logs de Auditoria</li>
+                    <li><i class="bi bi-arrow-right text-primary me-1"></i>Validação de Dados</li>
                   </ul>
                 </div>
               </div>
-              <div class="mt-4">
-                <button class="btn btn-primary btn-lg" onclick="authService.showLoginModal()">
-                  <i class="bi bi-person-circle"></i> Iniciar Sessão
-                </button>
-              </div>
-              <div class="mt-3 text-muted">
+
+              <button class="btn btn-primary btn-lg mb-3" onclick="authService.showLoginModal()">
+                <i class="bi bi-person-circle"></i> Iniciar Sessão
+              </button>
+              
+              <div class="text-muted">
                 <small>
-                  <strong>Credenciais de teste:</strong> admin / admin123
+                  <strong>Credenciais de teste:</strong> admin / admin123, jsilva / 123456, acosta / 123456
                 </small>
               </div>
             </div>
@@ -146,9 +147,9 @@
       </div>
     </section>
 
-    <!-- Main Navigation Cards (Only for authenticated users) -->
+    <!-- Cartões de Navegação Principal (Apenas para utilizadores autenticados) -->
     <section class="row g-4 justify-content-center mb-5" id="navigation-section" style="display: none;">
-      <div class="col-md-4">
+      <div class="col-md-4" id="users-card">
         <div class="card shadow-sm text-center dashboard-card">
           <div class="card-body">
             <i class="bi bi-person-gear fs-2 text-primary"></i>
@@ -174,7 +175,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4" id="types-card">
         <div class="card shadow-sm text-center dashboard-card">
           <div class="card-body">
             <i class="bi bi-tags fs-2 text-warning"></i>
@@ -191,10 +192,10 @@
 
   </main>
 
-  <!-- Toast Container -->
+  <!-- Contentor de Toasts -->
   <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100"></div>
 
-  <!-- Footer -->
+  <!-- Rodapé -->
   <footer class="bg-dark text-white text-center py-3 mt-auto">
     <div class="container">
       <p class="mb-1">&copy; 2025 Sistema de Gestão</p>
@@ -206,7 +207,7 @@
   <script src="/js/services/api.js"></script>
   <script src="/js/services/auth.js"></script>
   <script>
-    // Initialize page
+    // Inicializar página
     document.addEventListener('DOMContentLoaded', async () => {
       await authService.checkAuthStatus();
       updatePageContent();
@@ -221,14 +222,28 @@
       const navigationSection = document.getElementById('navigation-section');
       const statsSection = document.getElementById('stats-section');
       const userSection = document.getElementById('user-section');
+      const usersCard = document.getElementById('users-card');
+      const typesCard = document.getElementById('types-card');
 
       if (authService.isLoggedIn) {
         welcomeSection.style.display = 'none';
         navigationSection.style.display = 'flex';
-        statsSection.style.display = 'flex';
         userSection.style.display = 'block';
         
-        // Update user info
+        // Mostrar estatísticas apenas para Admin e Gestor
+        if (authService.isAdminOrManager()) {
+          statsSection.style.display = 'flex';
+          // Mostrar cartões de utilizadores e tipos para Admin/Gestor
+          usersCard.style.display = 'block';
+          typesCard.style.display = 'block';
+        } else {
+          statsSection.style.display = 'none';
+          // Esconder cartões de utilizadores e tipos para utilizadores normais
+          usersCard.style.display = 'none';
+          typesCard.style.display = 'none';
+        }
+        
+        // Atualizar informação do utilizador
         document.getElementById('user-name').textContent = authService.user.name;
         document.getElementById('user-role').textContent = authService.user.role;
       } else {
@@ -241,12 +256,12 @@
 
     async function loadDashboardStats() {
       try {
-        // Show loading state
+        // Mostrar estado de carregamento
         document.getElementById('users-count').innerHTML = '<div class="spinner-border spinner-border-sm"></div> Carregando...';
         document.getElementById('tasks-count').innerHTML = '<div class="spinner-border spinner-border-sm"></div> Carregando...';
         document.getElementById('types-count').innerHTML = '<div class="spinner-border spinner-border-sm"></div> Carregando...';
 
-        // Load users count
+        // Carregar número de utilizadores
         try {
           const usersResponse = await apiService.getUsers();
           if (usersResponse.success) {
@@ -258,7 +273,7 @@
           document.getElementById('users-count').textContent = '- Utilizadores';
         }
 
-        // Load tasks count
+        // Carregar número de tarefas
         try {
           const tasksResponse = await apiService.getTasks();
           if (tasksResponse.success) {
@@ -270,7 +285,7 @@
           document.getElementById('tasks-count').textContent = '- Tarefas';
         }
 
-        // Load task types count
+        // Carregar número de tipos de tarefas
         try {
           const typesResponse = await apiService.getTaskTypes();
           if (typesResponse.success) {
@@ -288,7 +303,7 @@
       }
     }
 
-    // Utility functions for toasts
+    // Funções utilitárias para toasts
     function showError(message) {
       const toastContainer = document.querySelector(".toast-container");
       if (!toastContainer) return;
@@ -382,7 +397,7 @@
       toast.show();
     }
 
-    // Auto-refresh stats every 30 seconds if user is logged in
+    // Atualizar estatísticas automaticamente a cada 30 segundos se o utilizador estiver autenticado
     setInterval(() => {
       if (authService.isLoggedIn) {
         loadDashboardStats();

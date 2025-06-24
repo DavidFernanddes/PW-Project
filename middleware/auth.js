@@ -1,4 +1,4 @@
-// Authentication middleware
+// Middleware de autenticação
 const ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
@@ -10,7 +10,7 @@ const ensureAuthenticated = (req, res, next) => {
   });
 };
 
-// Authorization middleware
+// Middleware de autorização
 const ensureRole = (roles) => {
   return (req, res, next) => {
     if (!req.isAuthenticated()) {
@@ -20,7 +20,7 @@ const ensureRole = (roles) => {
       });
     }
 
-    // Allow if user has any of the required roles
+    // Permitir se o utilizador tiver algum dos papéis necessários
     if (roles.includes(req.user.role)) {
       return next();
     }
@@ -32,10 +32,10 @@ const ensureRole = (roles) => {
   };
 };
 
-// Admin only middleware
+// Middleware apenas para administradores
 const ensureAdmin = ensureRole(['Administrador']);
 
-// Admin or Manager middleware
+// Middleware para administradores ou gestores
 const ensureAdminOrManager = ensureRole(['Administrador', 'Gestor']);
 
 module.exports = {

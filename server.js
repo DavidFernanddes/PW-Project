@@ -7,45 +7,45 @@ const session = require('express-session');
 const passport = require('passport');
 const path = require('path');
 
-// Import routes
+// Importar rotas
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
 const userRoutes = require('./routes/users');
 const typeRoutes = require('./routes/types');
 
-// Import database connection
+// Importar ligação à base de dados
 const db = require('./config/database');
 
-// Import passport configuration
+// Importar configuração do passport
 require('./config/passport')(passport);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware
+// Middleware de segurança
 app.use(helmet({
-  contentSecurityPolicy: false, // Disable for development
+  contentSecurityPolicy: false, // Desativar para desenvolvimento
 }));
 
-// Rate limiting
+// Limitação de pedidos
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // limitar cada IP a 100 pedidos por janela de tempo
   message: 'Muitos pedidos deste IP, tente novamente mais tarde.'
 });
 app.use('/api/', limiter);
 
-// CORS configuration
+// Configuração de CORS
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true
 }));
 
-// Body parsing middleware
+// Middleware para parsing do corpo dos pedidos
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Session configuration
+// Configuração de sessão
 app.use(session({
   secret: process.env.SESSION_SECRET || 'gestao-tarefas-secret-key',
   resave: false,
@@ -53,24 +53,24 @@ app.use(session({
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
   }
 }));
 
-// Passport middleware
+// Middleware do Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Static files
+// Ficheiros estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Routes
+// Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/types', typeRoutes);
 
-// Serve frontend pages
+// Servir páginas do frontend
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -87,7 +87,7 @@ app.get('/types', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'pages', 'TaskType.html'));
 });
 
-// Error handling middleware
+// Middleware de tratamento de erros
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
@@ -97,7 +97,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
+// Handler 404
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -105,11 +105,11 @@ app.use((req, res) => {
   });
 });
 
-// Test database connection and start server
+// Testar ligação à base de dados e iniciar servidor
 async function startServer() {
   try {
     await db.execute('SELECT 1');
-    console.log('Conexão com a base de dados estabelecida');
+    console.log('Ligação à base de dados estabelecida');
     
     app.listen(PORT, () => {
       console.log(`Servidor a correr na porta ${PORT}`);
@@ -117,7 +117,7 @@ async function startServer() {
       console.log(`API disponível em: http://localhost:${PORT}/api`);
     });
   } catch (error) {
-    console.error('Erro ao conectar com a base de dados:', error);
+    console.error('Erro ao ligar à base de dados:', error);
     process.exit(1);
   }
 }

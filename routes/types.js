@@ -5,10 +5,10 @@ const { validateTaskType, validateId } = require('../middleware/validation');
 
 const router = express.Router();
 
-// All routes require authentication
+// Todas as rotas requerem autenticação
 router.use(ensureAuthenticated);
 
-// GET /api/types - List all task types
+// GET /api/types - Listar todos os tipos de tarefa
 router.get('/', async (req, res) => {
   try {
     const [rows] = await db.execute(`
@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/types/:id - Get task type by ID
+// GET /api/types/:id - Obter tipo de tarefa pelo ID
 router.get('/:id', validateId, async (req, res) => {
   try {
     const { id } = req.params;
@@ -64,12 +64,12 @@ router.get('/:id', validateId, async (req, res) => {
   }
 });
 
-// POST /api/types - Create new task type (Admin/Manager only)
+// POST /api/types - Criar novo tipo de tarefa (Apenas Admin/Gestor)
 router.post('/', ensureAdminOrManager, validateTaskType, async (req, res) => {
   try {
     const { name } = req.body;
 
-    // Check if name already exists
+    // Verificar se o nome já existe
     const [existingTypes] = await db.execute(
       'SELECT id FROM task_types WHERE name = ?',
       [name]
@@ -82,13 +82,13 @@ router.post('/', ensureAdminOrManager, validateTaskType, async (req, res) => {
       });
     }
 
-    // Insert new task type
+    // Inserir novo tipo de tarefa
     const [result] = await db.execute(`
       INSERT INTO task_types (name) 
       VALUES (?)
     `, [name]);
 
-    // Get the created task type
+    // Obter o tipo de tarefa criado
     const [newType] = await db.execute(`
       SELECT id, name, created_at 
       FROM task_types 
@@ -110,13 +110,13 @@ router.post('/', ensureAdminOrManager, validateTaskType, async (req, res) => {
   }
 });
 
-// PUT /api/types/:id - Update task type (Admin/Manager only)
+// PUT /api/types/:id - Atualizar tipo de tarefa (Apenas Admin/Gestor)
 router.put('/:id', ensureAdminOrManager, validateId, validateTaskType, async (req, res) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
 
-    // Check if task type exists
+    // Verificar se o tipo de tarefa existe
     const [existingType] = await db.execute(
       'SELECT id FROM task_types WHERE id = ?',
       [id]
@@ -129,7 +129,7 @@ router.put('/:id', ensureAdminOrManager, validateId, validateTaskType, async (re
       });
     }
 
-    // Check if name already exists (excluding current type)
+    // Verificar se o nome já existe (excluindo o tipo atual)
     const [duplicateTypes] = await db.execute(
       'SELECT id FROM task_types WHERE name = ? AND id != ?',
       [name, id]
@@ -142,14 +142,14 @@ router.put('/:id', ensureAdminOrManager, validateId, validateTaskType, async (re
       });
     }
 
-    // Update task type
+    // Atualizar tipo de tarefa
     await db.execute(`
       UPDATE task_types 
       SET name = ?, updated_at = CURRENT_TIMESTAMP 
       WHERE id = ?
     `, [name, id]);
 
-    // Get updated task type
+    // Obter tipo de tarefa atualizado
     const [updatedType] = await db.execute(`
       SELECT id, name, updated_at 
       FROM task_types 
@@ -171,12 +171,12 @@ router.put('/:id', ensureAdminOrManager, validateId, validateTaskType, async (re
   }
 });
 
-// DELETE /api/types/:id - Delete task type (Admin/Manager only)
+// DELETE /api/types/:id - Eliminar tipo de tarefa (Apenas Admin/Gestor)
 router.delete('/:id', ensureAdminOrManager, validateId, async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Check if task type exists
+    // Verificar se o tipo de tarefa existe
     const [existingType] = await db.execute(
       'SELECT id, name FROM task_types WHERE id = ?',
       [id]
@@ -189,7 +189,7 @@ router.delete('/:id', ensureAdminOrManager, validateId, async (req, res) => {
       });
     }
 
-    // Check if type is being used by any tasks
+    // Verificar se o tipo está a ser usado por alguma tarefa
     const [tasksUsingType] = await db.execute(
       'SELECT COUNT(*) as task_count FROM tasks WHERE type_id = ?',
       [id]
@@ -202,7 +202,7 @@ router.delete('/:id', ensureAdminOrManager, validateId, async (req, res) => {
       });
     }
 
-    // Delete task type
+    // Eliminar tipo de tarefa
     await db.execute('DELETE FROM task_types WHERE id = ?', [id]);
 
     res.json({

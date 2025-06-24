@@ -2,7 +2,7 @@ let modalCreate, modalEdit, modalDelete;
 let modalCreateInstance, modalEditInstance, modalDeleteInstance;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // Check authentication status
+    // Verificar estado de autenticação
     await authService.checkAuthStatus();
     
     if (!authService.isLoggedIn) {
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function setupUserInfo() {
-    // Add user info to the page
+    // Adicionar informação do utilizador à página
     const header = document.querySelector('header .container');
     if (header && authService.user) {
         const userInfo = document.createElement('div');
@@ -103,9 +103,9 @@ async function loadActiveUsers() {
             const createUserSelect = document.getElementById("utilizadorSelect");
             const editUserSelect = document.getElementById("editarUtilizadorSelect");
             
-            // Create user select elements if they don't exist
+            // Criar elementos select de utilizador se não existirem
             if (!createUserSelect) {
-                // Replace text input with select
+                // Substituir input de texto por select
                 const userInput = document.getElementById("utilizador");
                 if (userInput) {
                     const select = document.createElement("select");
@@ -293,7 +293,7 @@ function handleCreateTask() {
             const response = await apiService.createTask(taskData);
             
             if (response.success) {
-                await loadExistingTasks(); // Reload tasks
+                await loadExistingTasks(); // Recarregar tarefas
                 modalCreateInstance.hide();
                 showSuccess("Tarefa criada com sucesso!");
             } else {
@@ -370,7 +370,7 @@ async function handleEditTask(taskId) {
                 const updateResponse = await apiService.updateTask(taskId, taskData);
                 
                 if (updateResponse.success) {
-                    await loadExistingTasks(); // Reload tasks
+                    await loadExistingTasks(); // Recarregar tarefas
                     modalEditInstance.hide();
                     showSuccess("Tarefa editada com sucesso!");
                 } else {
@@ -429,7 +429,7 @@ async function handleDeleteTask(taskId) {
                 const deleteResponse = await apiService.deleteTask(taskId);
                 
                 if (deleteResponse.success) {
-                    await loadExistingTasks(); // Reload tasks
+                    await loadExistingTasks(); // Recarregar tarefas
                     modalDeleteInstance.hide();
                     showSuccess("Tarefa apagada com sucesso!");
                 } else {

@@ -5,6 +5,7 @@ body, h1, h2, h3, p, ul, li, table, th, td, button {
   box-sizing: border-box;
 }
 
+/* Corpo */
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
@@ -13,7 +14,7 @@ body {
   padding: 20px;
 }
 
-/* Header */
+/* Cabeçalho */
 header {
   background-color: #4CAF50;
   color: white;
@@ -27,7 +28,7 @@ header h1 {
   font-size: 2rem;
 }
 
-/* Main content */
+/* Conteúdo principal */
 main {
   background: white;
   padding: 20px;
@@ -35,7 +36,7 @@ main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Navigation menu */
+/* Menu de navegação */
 nav ul {
   list-style: none;
   padding: 0;
@@ -64,7 +65,7 @@ nav ul li a:hover {
   transform: scale(1.05);
 }
 
-/* Buttons */
+/* Botões */
 button {
   background-color: #4CAF50;
   color: white;
@@ -85,7 +86,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Tables */
+/* Tabelas */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -111,7 +112,7 @@ table tr:hover {
   background-color: #f1f1f1;
 }
 
-/* Form elements */
+/* Elementos de formulário */
 label {
   font-weight: bold;
   margin-right: 10px;
@@ -123,14 +124,14 @@ select {
   border-radius: 5px;
 }
 
-/* Footer */
+/* Rodapé */
 footer {
   text-align: center;
   margin-top: 20px;
   color: #777;
 }
 
-/* Error messages */
+/* Mensagens de erro */
 .error {
   color: red;
   font-weight: bold;

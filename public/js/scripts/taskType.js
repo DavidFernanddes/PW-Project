@@ -2,7 +2,7 @@ let modalCreate, modalEdit, modalDelete;
 let modalCreateInstance, modalEditInstance, modalDeleteInstance;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Check authentication status
+    // Verificar estado de autenticação
     await authService.checkAuthStatus();
     
     if (!authService.isLoggedIn) {
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Check permissions (Admin or Manager)
+    // Verificar permissões (Administrador ou Gestor)
     if (!authService.isAdminOrManager()) {
         showError('Não tem permissões para aceder a esta página');
         setTimeout(() => {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function setupUserInfo() {
-    // Add user info to the page
+    // Adicionar informação do utilizador à página
     const header = document.querySelector('header .container');
     if (header && authService.user) {
         const userInfo = document.createElement('div');
@@ -152,7 +152,7 @@ function handleCreateType() {
             const response = await apiService.createTaskType({ name: typeName });
             
             if (response.success) {
-                await loadExistingTypes(); // Reload types
+                await loadExistingTypes(); // Recarregar tipos
                 modalCreateInstance.hide();
                 showSuccess('Tipo de tarefa criado com sucesso!');
             } else {
@@ -202,7 +202,7 @@ async function handleEditType(id) {
                 const updateResponse = await apiService.updateTaskType(id, { name: newTypeName });
                 
                 if (updateResponse.success) {
-                    await loadExistingTypes(); // Reload types
+                    await loadExistingTypes(); // Recarregar tipos
                     modalEditInstance.hide();
                     showSuccess('Tipo de tarefa editado com sucesso!');
                 } else {
@@ -261,7 +261,7 @@ async function handleDeleteType(id) {
                 const deleteResponse = await apiService.deleteTaskType(id);
                 
                 if (deleteResponse.success) {
-                    await loadExistingTypes(); // Reload types
+                    await loadExistingTypes(); // Recarregar tipos
                     modalDeleteInstance.hide();
                     showSuccess('Tipo de tarefa apagado com sucesso!');
                 } else {

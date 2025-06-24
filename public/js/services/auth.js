@@ -1,4 +1,4 @@
-// Authentication Service
+// Serviço de Autenticação
 class AuthService {
     constructor() {
         this.user = null;
@@ -34,7 +34,7 @@ class AuthService {
                 this.isLoggedIn = true;
                 this.updateUI();
                 
-                // Trigger page update if on index page
+                // Actualizar página se estiver na página inicial
                 if (typeof updatePageContent === 'function') {
                     updatePageContent();
                 }
@@ -57,11 +57,11 @@ class AuthService {
             this.user = null;
             this.isLoggedIn = false;
             this.updateUI();
-            // Redirect to login page or home
+            // Redireccionar para a página de login ou página inicial
             window.location.href = '/';
         } catch (error) {
             console.error('Erro no logout:', error);
-            // Force logout on client side even if server request fails
+            // Forçar logout no lado do cliente mesmo que a requisição ao servidor falhe
             this.user = null;
             this.isLoggedIn = false;
             this.updateUI();
@@ -115,7 +115,7 @@ class AuthService {
         }
         
         if (!this.hasPermission(requiredRoles)) {
-            showError('Não tem permissões para realizar esta ação');
+            showError('Não tem permissões para realizar esta acção');
             return false;
         }
         
@@ -123,7 +123,7 @@ class AuthService {
     }
 
     showLoginModal() {
-        // Create and show login modal
+        // Criar e mostrar modal de login
         const modalHtml = `
             <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -153,16 +153,16 @@ class AuthService {
             </div>
         `;
 
-        // Remove existing modal if any
+        // Remover modal existente se houver
         const existingModal = document.getElementById('loginModal');
         if (existingModal) {
             existingModal.remove();
         }
 
-        // Add modal to page
+        // Adicionar modal à página
         document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-        // Setup modal event listeners
+        // Configurar eventos do modal
         const modal = new bootstrap.Modal(document.getElementById('loginModal'));
         const loginButton = document.getElementById('loginButton');
         const loginForm = document.getElementById('loginForm');
@@ -206,5 +206,5 @@ class AuthService {
     }
 }
 
-// Create global auth service instance
+// Criar instância global do serviço de autenticação
 const authService = new AuthService();

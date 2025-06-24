@@ -1,6 +1,6 @@
 const { body, param, validationResult } = require('express-validator');
 
-// Handle validation errors
+// Lida com erros de validação
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -13,7 +13,7 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-// User validation rules
+// Regras de validação para Utilizador
 const validateUser = [
   body('name')
     .trim()
@@ -40,12 +40,12 @@ const validateUser = [
   body('active')
     .optional()
     .isBoolean()
-    .withMessage('Active deve ser boolean'),
+    .withMessage('Active deve ser booleano'),
   
   handleValidationErrors
 ];
 
-// Task validation rules
+// Regras de validação para Tarefa
 const validateTask = [
   body('name')
     .trim()
@@ -90,12 +90,12 @@ const validateTask = [
   body('completed')
     .optional()
     .isBoolean()
-    .withMessage('Completed deve ser boolean'),
+    .withMessage('Completed deve ser booleano'),
   
   handleValidationErrors
 ];
 
-// Task Type validation rules
+// Regras de validação para Tipo de Tarefa
 const validateTaskType = [
   body('name')
     .trim()
@@ -107,7 +107,7 @@ const validateTaskType = [
   handleValidationErrors
 ];
 
-// Login validation rules
+// Regras de validação para Login
 const validateLogin = [
   body('username')
     .trim()
@@ -121,7 +121,7 @@ const validateLogin = [
   handleValidationErrors
 ];
 
-// ID parameter validation
+// Validação do parâmetro ID
 const validateId = [
   param('id')
     .isInt({ min: 1 })

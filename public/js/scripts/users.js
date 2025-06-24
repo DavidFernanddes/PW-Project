@@ -2,7 +2,7 @@ let modalCreate, modalEdit, modalDelete;
 let modalCreateInstance, modalEditInstance, modalDeleteInstance;
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // Check authentication status
+  // Verificar estado de autenticação
   await authService.checkAuthStatus();
   
   if (!authService.isLoggedIn) {
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Check permissions (Admin or Manager)
+  // Verificar permissões (Administrador ou Gestor)
   if (!authService.isAdminOrManager()) {
     showError('Não tem permissões para aceder a esta página');
     setTimeout(() => {
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function setupUserInfo() {
-  // Add user info to the page
+  // Adicionar informação do utilizador à página
   const header = document.querySelector('header .container');
   if (header && authService.user) {
     const userInfo = document.createElement('div');
@@ -186,7 +186,7 @@ function handleCreateUser() {
       const response = await apiService.createUser(userData);
       
       if (response.success) {
-        await loadExistingUsers(); // Reload users
+        await loadExistingUsers(); // Recarregar utilizadores
         modalCreateInstance.hide();
         showSuccess("Utilizador criado com sucesso!");
       } else {
@@ -250,7 +250,7 @@ async function handleEditUser(userId) {
         const updateResponse = await apiService.updateUser(userId, userData);
         
         if (updateResponse.success) {
-          await loadExistingUsers(); // Reload users
+          await loadExistingUsers(); // Recarregar utilizadores
           modalEditInstance.hide();
           showSuccess("Utilizador editado com sucesso!");
         } else {
@@ -302,7 +302,7 @@ async function handleDeleteUser(userId) {
         const deleteResponse = await apiService.deleteUser(userId);
         
         if (deleteResponse.success) {
-          await loadExistingUsers(); // Reload users
+          await loadExistingUsers(); // Recarregar utilizadores
           modalDeleteInstance.hide();
           showSuccess("Utilizador apagado com sucesso!");
         } else {

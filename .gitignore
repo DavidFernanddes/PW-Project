@@ -1,35 +1,35 @@
-# Dependencies
+# Dependências
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Environment variables
+# Variáveis de ambiente
 #.env
 #.env.local
 #.env.development.local
 #.env.test.local
 #.env.production.local
 
-# Runtime data
+# Dados de execução
 pids
 *.pid
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
+# Diretoria de cobertura usada por ferramentas como istanbul
 coverage/
 *.lcov
 
-# Logs
+# Registos
 logs
 *.log
 
-# Temporary folders
+# Pastas temporárias
 tmp/
 temp/
 
-# OS generated files
+# Ficheiros gerados pelo sistema operativo
 .DS_Store
 .DS_Store?
 ._*
@@ -38,30 +38,30 @@ temp/
 ehthumbs.db
 Thumbs.db
 
-# IDE and Editor files
+# Ficheiros de IDE e editores
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Build directories
+# Diretorias de build
 dist/
 build/
 
-# Database files (if using SQLite for development)
+# Ficheiros de base de dados (se usar SQLite para desenvolvimento)
 *.db
 *.sqlite
 *.sqlite3
 
-# Backup files
+# Ficheiros de cópia de segurança
 *.backup
 *.bak
 
-# Archive files
+# Ficheiros de arquivo
 *.tar.gz
 *.zip
 *.rar
 
-# Documentation build
+# Build da documentação
 docs/_build/

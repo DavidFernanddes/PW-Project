@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise');
 
-// Database connection configuration
+// Configuração da ligação à base de dados
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 3306,
@@ -12,21 +12,21 @@ const dbConfig = {
   queueLimit: 0
 };
 
-// Create connection pool
+// Cria um pool de ligações
 const pool = mysql.createPool(dbConfig);
 
-// Test connection
+// Função para testar a ligação à base de dados
 async function testConnection() {
   try {
     const connection = await pool.getConnection();
-    console.log('Conexão com MySQL estabelecida');
+    console.log('Ligação ao MySQL estabelecida');
     connection.release();
     return true;
   } catch (error) {
-    console.error('Erro ao conectar com MySQL:', error.message);
+    console.error('Erro ao ligar ao MySQL:', error.message);
     return false;
   }
 }
 
-// Export pool for queries
+// Exporta o pool para ser usado nas queries
 module.exports = pool;
